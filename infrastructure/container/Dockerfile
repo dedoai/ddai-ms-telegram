@@ -20,7 +20,7 @@ COPY . .
 WORKDIR $APP_DIR
 
 # Install Node.js dependencies, including Sharp (which depends on libvips)
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Second stage: Production stage using AWS ECR Node.js image
 #FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-al2023
