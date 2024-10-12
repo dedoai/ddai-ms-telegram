@@ -19,20 +19,20 @@ RUN ls -l .
 RUN npm install
 
 # Grab a fresh slim copy of the image to reduce the final size
-FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base-nodejs:16.18.1-al23
+#FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base-nodejs:16.18.1-al23
 
 # Install system dependencies required for Sharp
 RUN yum update -y && \
     yum install -y libvips libvips-devel gcc-c++ make
 
 # Include global arg in this stage of the build
-ARG APP_DIR="/app"
+#ARG APP_DIR="/app"
 
 # Set working directory to function root directory
-WORKDIR $APP_DIR
+#WORKDIR $APP_DIR
 
 # Copy in the built dependencies
-COPY --from=build-image /app .
+#COPY --from=build-image /app .
 
 #RUN ls -l /app
 
