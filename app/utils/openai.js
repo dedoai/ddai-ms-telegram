@@ -7,7 +7,7 @@ let openai;
 // Carica le configurazioni da AWS Secrets Manager
 (async () => {
     try {
-        const secrets = await getSecret('dev/telegram');
+        const secrets = JSON.parse( getSecret('dev/telegram') );
 
         const configuration = new Configuration({
             apiKey: secrets.OPENAI_APIKEY,  // Recupera la chiave OpenAI da AWS
