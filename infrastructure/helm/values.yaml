@@ -1,0 +1,18 @@
+replicaCount: 2
+
+image:
+  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-ms-backend
+  pullPolicy: IfNotPresent
+  tag: {{REL}}
+
+service:
+  type: LoadBalancer
+  port: 8080
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

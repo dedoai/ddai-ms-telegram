@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # Install dependencies needed for running tests
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 381492109137.dkr.ecr.us-east-1.amazonaws.com
+      - REL=$(cat release_version.txt)
+      - cd app
+      - npm install -g
+      - cd ..
+      # Upgrade AWS CLI to the latest version
+#      - pip install --upgrade awscli
+  pre_build:
+    commands:
+      - echo "Prebuild step"
+      # Discover and run unit tests in the 'tests' directory
+#      - npm test
+  build:
+    commands:
+     - cp infrastructure/builder/Dockerfile .
+     - d=$(date +"%Y%m%d%H%M%S")
+     - REL="${REL}_$d"
+     - docker build . -t {{FUNCTION_NAME}}:${REL}
+  post_build:
+    commands:
+     - IMAGE_URI=381492109137.dkr.ecr.us-east-1.amazonaws.com/{{FUNCTION_NAME}}:${REL}
+     - docker tag {{FUNCTION_NAME}}:${REL} $IMAGE_URI
+     - docker push $IMAGE_URI
+     - pwd
+     - ls -l
+     - cp infrastructure/deploy/deploy.sh .
+     - ./deploy.sh dev $IMAGE_URI
+
+artifacts:
+  files:
+    - '**/*'
