@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ddai-ms-backend.fullname" . }}
+  name: {{ include "ddai-job-backend.fullname" . }}
   labels:
-    app: {{ include "ddai-ms-backend.name" . }}
+    app: {{ include "ddai-job-backend.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "ddai-ms-backend.name" . }}
+      app: {{ include "ddai-job-backend.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "ddai-ms-backend.name" . }}
+        app: {{ include "ddai-job-backend.name" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -20,3 +20,33 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
+          env:
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ddai-ms-telegram
+                  key: DB_URL
+
+            - name: BUCKET_S3
+              valueFrom:
+                configMapKeyRef:
+                  name: ddai-ms-telegram
+                  key: BUCKET_S3
+
+            - name: REM_DELAY
+              valueFrom:
+                configMapKeyRef:
+                  name: ddai-ms-telegram
+                  key: REM_DELAY
+
+            - name: AWS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_KEY
+
+            - name: AWS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_SECRET

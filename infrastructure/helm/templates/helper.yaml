@@ -1,8 +1,8 @@
-{{- define "ddai-ms-backend.name" -}}
+{{- define "ddai-job-backend.name" -}}
 {{- .Chart.Name | lower -}}
 {{- end -}}
 
-{{- define "ddai-ms-backend.fullname" -}}
+{{- define "ddai-job-backend.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}

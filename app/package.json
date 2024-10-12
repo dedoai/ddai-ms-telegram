@@ -1,21 +1,16 @@
 {
-  "name": "{{FUNCTION_NAME}}",
+  "name": "dedo-bot",
   "version": "1.0.0",
-  "description": "Welcome to the TicketSms sample lambda application",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
   },
   "dependencies": {
-    "crypto": "^1.0.1",
-    "php-unserialize": "^0.0.1",
-    "node-fetch": "^2.6.12",
-    "redis": "^4.6.7"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "TicketSms Dream Team",
-  "license": "ISC"
+    "dotenv": "^10.0.0",
+    "node-telegram-bot-api": "^0.57.0",
+    "pg": "^8.7.1",
+    "sharp": "^0.29.3",
+    "aws-sdk": "^2.1030.0",
+    "node-cron": "^3.0.0"
+  }
 }

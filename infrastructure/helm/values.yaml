@@ -1,13 +1,20 @@
 replicaCount: 2
 
 image:
-  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-ms-backend
+  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-job-backend
   pullPolicy: IfNotPresent
   tag: {{REL}}
 
 service:
   type: LoadBalancer
   port: 8080
+
+env:
+  configMapRef:
+    name: ddai-ms-telegram
+
+  secretRef:
+    name: aws-credentials
 
 resources: {}
 
