@@ -1,5 +1,5 @@
 // /src/utils/openai.js
-const { getSecret } = require('../config/index');
+const secrets = require('../config/index');
 const { Configuration, OpenAIApi } = require("openai");
 
 let openai;
@@ -8,8 +8,7 @@ let openai;
 (async () => {
     try {
         // Usa await correttamente in una funzione asincrona
-        const secret = await getSecret('dev/telegram');
-        const secrets = JSON.parse(secret);
+	console.log("OPENAPII KEY: ", secrets.OPENAI_APIKEY);
         const configuration = new Configuration({
             apiKey: secrets.OPENAI_APIKEY,  // Recupera la chiave OpenAI da AWS
         });
