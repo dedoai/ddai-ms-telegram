@@ -7,7 +7,7 @@ const { getSecret } = require('../config/index');
 
 
         // Usa await correttamente in una funzione asincrona
-        const secret = getSecret('dev/telegram');
+        const secret = await getSecret('dev/telegram');
         const secrets = JSON.parse(secret);
         console.log("Il segreto è: ", secrets, typeof secrets);
         // Configura il bot Telegram con il token
