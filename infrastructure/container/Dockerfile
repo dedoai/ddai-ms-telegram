@@ -1,43 +1,37 @@
 # Define custom function directory
 ARG APP_DIR="/app"
 
-# Use the Node.js image with libvips preinstalled
-# FROM v4tech/ubuntu-nodejs-libvips:16 as build-image
-FROM public.ecr.aws/znetstar/libvips-base:latest
+FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
 
-# Install Node.js
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs
-
-# First stage: Build stage
-# FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
+# Include global arg in this stage of the build
+ARG APP_DIR
 
 # Copy function code
 COPY . .
 
 WORKDIR $APP_DIR
 
-# Install Node.js dependencies, including Sharp (which depends on libvips)
-RUN npm install -g npm@latest && npm install --legacy-peer-deps
-#RUN npm cache clean --force && npm install --legacy-peer-deps
-#RUN npm install --legacy-peer-deps
+RUN ls -l .
 
-# Second stage: Production stage using AWS ECR Node.js image
-#FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-al2023
+# Install Node.js dependencies
+RUN npm install
 
-# Copy the application code and dependencies from the build stage
-#COPY --from=build-image /app /app
+# Grab a fresh slim copy of the image to reduce the final size
+FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base-nodejs:16.18.1-al23
 
-# Copy vips binaries and libraries from the build-image stage
-#COPY --from=build-image /usr/lib64 /usr/lib64
-#COPY --from=build-image /usr/bin/vips* /usr/bin/
+# Include global arg in this stage of the build
+ARG APP_DIR="/app"
 
-#WORKDIR /app
+# Set working directory to function root directory
+WORKDIR $APP_DIR
+
+# Copy in the built dependencies
+COPY --from=build-image /app .
+
+#RUN ls -l /app
 
 # Expose the port the app runs on
-EXPOSE 80
+EXPOSE 8080
 
 # Start the application
 CMD ["node", "index.js"]
