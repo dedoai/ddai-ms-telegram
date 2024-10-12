@@ -2,7 +2,14 @@
 ARG APP_DIR="/app"
 
 # Use the Node.js image with libvips preinstalled
-FROM v4tech/ubuntu-nodejs-libvips:16 as build-image
+# FROM v4tech/ubuntu-nodejs-libvips:16 as build-image
+FROM public.ecr.aws/znetstar/libvips-base:latest
+
+# Install Node.js
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
 
 # First stage: Build stage
 # FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
