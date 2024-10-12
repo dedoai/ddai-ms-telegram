@@ -53,7 +53,7 @@ console.log("Environment vars: ", process.env);
         });
         console.log('DEDOBot avviato con successo!');
         // Avvia anche le routine cicliche per le notifiche
-        reminders(bot, secrets);
+        // reminders(bot, secrets);
     } catch (error) {
         console.error('Errore durante il caricamento delle configurazioni o l\'avvio del bot:', error);
 	process.exit(1);
