@@ -1,24 +1,11 @@
 # Define custom function directory
 ARG APP_DIR="/app"
 
+# Use the Node.js image with libvips preinstalled
+FROM v4tech/ubuntu-nodejs-libvips:16 as build-image
+
 # First stage: Build stage
-FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
-
-# Install build tools and necessary libraries
-RUN yum update -y && \
-    yum install -y gcc-c++ make tar wget && \
-    yum install -y glib2-devel expat-devel libjpeg-devel libpng-devel libtiff-devel \
-    libgsf-devel librsvg2-devel orc-devel gobject-introspection-devel
-
-# Download and compile libvips from source
-WORKDIR /tmp
-RUN wget https://github.com/libvips/libvips/releases/download/v8.14.3/vips-8.14.3.tar.gz && \
-    tar xzf vips-8.14.3.tar.gz && \
-    cd vips-8.14.3 && \
-    ./configure --prefix=/usr && \
-    make && \
-    make install
-
+# FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
 
 # Copy function code
 COPY . .
