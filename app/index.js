@@ -39,6 +39,7 @@ console.log("Environment vars: ", process.env);
         const secrets = await getSecret('dev/telegram');
 	console.log("Il segreto è: ", secrets);
         // Configura il bot Telegram con il token
+	console.log("BOT TOKEN: ", secrets.TELEGRAM_KEY);
         const bot = new TelegramBot(secrets.TELEGRAM_KEY, { polling: true });
         // Setup del bot con listener per i messaggi
         bot.on('message', async (msg) => {
@@ -51,11 +52,19 @@ console.log("Environment vars: ", process.env);
                 bot.sendMessage(chatId, 'Benvenuto! Per favore, carica un\'immagine per partecipare.');
             }
         });
+
+        bot.on('polling_error', (error) => {
+	    console.log(error.code);  // Errore di polling
+	});
+
+	bot.on('photo', (msg) => {
+	    console.log('Photo received');
+	});
+
         console.log('DEDOBot avviato con successo!');
         // Avvia anche le routine cicliche per le notifiche
         // reminders(bot, secrets);
     } catch (error) {
         console.error('Errore durante il caricamento delle configurazioni o l\'avvio del bot:', error);
-	process.exit(1);
     }
 })();
