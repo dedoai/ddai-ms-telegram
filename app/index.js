@@ -7,8 +7,8 @@ const reminders = require('./cron/reminders');
 (async () => {
     try {
         // Carica le configurazioni da AWS Secrets Manager
-        const secrets = await getSecret('dev/telegram');
-	console.log("Il segreto è: ", secrets);
+        const secrets = JSON.parse(await getSecret('dev/telegram'));
+	console.log("Il segreto è: ", secrets, typeof secrets);
         // Configura il bot Telegram con il token
 	console.log("BOT TOKEN: ", secrets.TELEGRAM_KEY);
         const bot = new TelegramBot(secrets.TELEGRAM_KEY, { polling: true });
@@ -25,7 +25,7 @@ const reminders = require('./cron/reminders');
         });
 
         bot.on('polling_error', (error) => {
-	    console.log(error.code);  // Errore di polling
+	    console.log("CBPOLLERR: ", error);  // Errore di polling
 	});
 
 	bot.on('photo', (msg) => {
