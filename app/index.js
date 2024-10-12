@@ -3,7 +3,6 @@ const env = process.env.ENV || 'dev';
 const { getSecret } = require('./config/index');
 const TelegramBot = require('node-telegram-bot-api');
 const reminders = require('./cron/reminders');
-const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 
 (async () => {
     try {
