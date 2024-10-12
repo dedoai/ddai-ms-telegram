@@ -11,11 +11,13 @@ console.log("Environment vars: ", process.env);
     try {
 	// Crea un nuovo client SecretsManager
 	const client = new SecretsManagerClient(
-		{ region: "us-east-1" },
-		credentials: {
-    			accessKeyId: process.env.AWS_KEY,       // Prendi la chiave AWS dall'ambiente
-    			secretAccessKey: process.env.AWS_SECRET // Prendi il secret dall'ambiente
-  		}
+		{
+			region: "us-east-1",
+	 		credentials: {
+    				accessKeyId: process.env.AWS_KEY,       // Prendi la chiave AWS dall'ambiente
+    				secretAccessKey: process.env.AWS_SECRET // Prendi il secret dall'ambiente
+  			}
+		}
 	); 
 	// Funzione per recuperare il segreto
 	async function getSecret(secretName) {
