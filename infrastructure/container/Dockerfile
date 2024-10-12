@@ -6,7 +6,6 @@ FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-im
 
 # Install dependencies required for libvips
 RUN yum update -y && \
-    yum install -y epel-release && \
     yum install -y vips vips-devel
 
 # Copy function code
@@ -22,6 +21,7 @@ FROM node:16
 
 # Copy application code and dependencies
 COPY --from=build-image /app /app
+COPY --from=build-image /usr/bin/vips* /usr/bin/
 
 WORKDIR /app
 
