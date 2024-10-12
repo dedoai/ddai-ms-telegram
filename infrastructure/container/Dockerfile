@@ -36,4 +36,4 @@ COPY --from=build-image /app .
 EXPOSE 80
 
 # Start the application
-CMD ["node", "src/index.js"]
+CMD ["node", "index.js"]
