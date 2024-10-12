@@ -14,8 +14,8 @@ console.log("Environment vars: ", process.env);
 		{
 			region: "us-east-1",
 	 		credentials: {
-    				accessKeyId: process.env.AWS_KEY,       // Prendi la chiave AWS dall'ambiente
-    				secretAccessKey: process.env.AWS_SECRET // Prendi il secret dall'ambiente
+    				accessKeyId: process.env.AWS_KEY.trim(),       // Prendi la chiave AWS dall'ambiente
+    				secretAccessKey: process.env.AWS_SECRET.trim() // Prendi il secret dall'ambiente
   			}
 		}
 	); 
@@ -56,6 +56,6 @@ console.log("Environment vars: ", process.env);
         reminders(bot, secrets);
     } catch (error) {
         console.error('Errore durante il caricamento delle configurazioni o l\'avvio del bot:', error);
-	precess.exit(1);
+	process.exit(1);
     }
 })();
