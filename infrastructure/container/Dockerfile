@@ -4,9 +4,21 @@ ARG APP_DIR="/app"
 # First stage: Build stage
 FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
 
-# Install dependencies required for libvips
+# Install build tools and necessary libraries
 RUN yum update -y && \
-    yum install -y vips vips-devel
+    yum install -y gcc-c++ make tar wget && \
+    yum install -y glib2-devel expat-devel libjpeg-devel libpng-devel libtiff-devel \
+    libgsf-devel librsvg2-devel orc-devel gobject-introspection-devel
+
+# Download and compile libvips from source
+WORKDIR /tmp
+RUN wget https://github.com/libvips/libvips/releases/download/v8.14.3/vips-8.14.3.tar.gz && \
+    tar xzf vips-8.14.3.tar.gz && \
+    cd vips-8.14.3 && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install
+
 
 # Copy function code
 COPY . .
@@ -17,16 +29,16 @@ WORKDIR $APP_DIR
 RUN npm install
 
 # Second stage: Production stage using AWS ECR Node.js image
-FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-al2023
+#FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-al2023
 
 # Copy the application code and dependencies from the build stage
-COPY --from=build-image /app /app
+#COPY --from=build-image /app /app
 
 # Copy vips binaries and libraries from the build-image stage
-COPY --from=build-image /usr/lib64 /usr/lib64
-COPY --from=build-image /usr/bin/vips* /usr/bin/
+#COPY --from=build-image /usr/lib64 /usr/lib64
+#COPY --from=build-image /usr/bin/vips* /usr/bin/
 
-WORKDIR /app
+#WORKDIR /app
 
 # Expose the port the app runs on
 EXPOSE 80
