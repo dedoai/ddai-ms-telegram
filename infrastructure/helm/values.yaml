@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-job-backend
+  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-ms-telegram
   pullPolicy: IfNotPresent
   tag: {{REL}}
 

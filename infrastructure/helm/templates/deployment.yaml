@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ddai-job-backend.fullname" . }}
+  name: {{ include "ddai-ms-telegram.fullname" . }}
   labels:
-    app: {{ include "ddai-job-backend.name" . }}
+    app: {{ include "ddai-ms-telegram.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "ddai-job-backend.name" . }}
+      app: {{ include "ddai-ms-telegram.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "ddai-job-backend.name" . }}
+        app: {{ include "ddai-ms-telegram.name" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
