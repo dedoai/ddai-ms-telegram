@@ -17,7 +17,8 @@ RUN ls -l .
 RUN npm install
 
 # Grab a fresh slim copy of the image to reduce the final size
-FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base-nodejs:16.18.1-al23
+#FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base-nodejs:16.18.1-al23
+FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23
 
 # Install additional tools (bash, curl, traceroute, netstat, etc.)
 RUN yum update -y && \
