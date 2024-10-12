@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const secretsManager = new AWS.SecretsManager({
     accessKeyId: process.env.AWS_KEY,  // Queste chiavi possono ancora provenire da env o IAM
     secretAccessKey: process.env.AWS_SECRET,
-    region: 'eu-west-1',
+    region: 'us-east-1',
 });
 
 async function getSecret(secretName) {
