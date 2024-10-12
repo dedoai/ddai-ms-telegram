@@ -3,7 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const { getUser, createUser } = require('../db/postgres');
 const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
-const { getSecret } = require('./config/index');
+const { getSecret } = require('../config/index');
 
 
         // Usa await correttamente in una funzione asincrona
