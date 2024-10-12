@@ -4,35 +4,21 @@ ARG APP_DIR="/app"
 # First stage: Build stage
 FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-image
 
-# Install dependencies required for compiling libvips
+# Install dependencies required for libvips
 RUN yum update -y && \
-    yum groupinstall -y "Development Tools" && \
-    yum install -y glib2 glib2-devel libjpeg-turbo libjpeg-turbo-devel libpng libpng-devel \
-    libtiff libtiff-devel libwebp libwebp-devel git gtk-doc
-
-# Install libvips from source
-RUN git clone https://github.com/libvips/libvips.git && \
-    cd libvips && \
-    git checkout v8.10.6 && \
-    ./configure --disable-introspection && \
-    make && \
-    make install && \
-    ldconfig
+    yum install -y epel-release && \
+    yum install -y vips vips-devel
 
 # Copy function code
 COPY . .
 
 WORKDIR $APP_DIR
 
-# Install Node.js dependencies, including Sharp
+# Install Node.js dependencies, including Sharp (which depends on libvips)
 RUN npm install
 
-# Second stage: Production stage (Alpine or your final image)
+# Second stage: Production stage
 FROM node:16
-
-# Install libvips runtime libraries
-COPY --from=build-image /usr/local/lib /usr/local/lib
-COPY --from=build-image /usr/local/include /usr/local/include
 
 # Copy application code and dependencies
 COPY --from=build-image /app /app
