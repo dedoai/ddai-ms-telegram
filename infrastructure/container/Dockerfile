@@ -14,7 +14,7 @@ RUN yum update -y && \
 RUN git clone https://github.com/libvips/libvips.git && \
     cd libvips && \
     git checkout v8.10.6 && \
-    ./autogen.sh --disable-introspection && \
+    ./configure --disable-introspection && \
     make && \
     make install && \
     ldconfig
