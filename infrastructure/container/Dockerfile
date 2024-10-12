@@ -7,7 +7,9 @@ FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-im
 ARG APP_DIR
 
 # Copy function code
-COPY app/ .
+COPY . .
+
+RUN ls -l .
 
 WORKDIR $APP_DIR
 
@@ -34,4 +36,4 @@ COPY --from=build-image /app .
 EXPOSE 80
 
 # Start the application
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
