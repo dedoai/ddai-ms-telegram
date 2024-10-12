@@ -16,9 +16,10 @@ const secrets  = require('../config/index');
 TelegramBot.Promise = Promise;
 
 // Inizializza il bot correttamente
-const bot = new TelegramBot(secrets.TELEGRAM_KEY, { polling: true });
+var bot;
+var TOKEN;
 
-bot.on('message', async (msg) => {
+async function callback (msg) {
     const chatId = msg.chat.id;
     const telegramId = msg.from.id;
 
@@ -53,6 +54,13 @@ bot.on('message', async (msg) => {
         console.error(error);
         bot.sendMessage(chatId, "Si è verificato un errore. Riprova più tardi.");
     }
-});
+}
 
-module.exports = bot;
+async function start( TOKENAPI ){
+	TOKEN=TOKENAPI;
+	console.log("TELEGRAM API ", TOKEN);
+	bot = new TelegramBot(TOKEN, { polling: true });
+	bot.on('message', callback );
+}
+
+module.exports = { start };

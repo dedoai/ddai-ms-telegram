@@ -3,7 +3,6 @@ const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client
 
 const AWS = require('aws-sdk');
 
-
         // Crea un nuovo client SecretsManager
         const client = new SecretsManagerClient(
                 {
@@ -32,4 +31,4 @@ const AWS = require('aws-sdk');
         }
 
 
-module.exports = await getSecret('dev/telegram');
+module.exports = { getSecret };

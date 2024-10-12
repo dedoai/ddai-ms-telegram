@@ -3,21 +3,22 @@ const secrets = require('../config/index');
 const { Configuration, OpenAIApi } = require("openai");
 
 let openai;
+var TOKEN;
 
 // Carica le configurazioni da AWS Secrets Manager
-(async () => {
+async function setup(OPENAI_APIKEY) {
     try {
+        TOKEN=OPENAI_APIKEY;
         // Usa await correttamente in una funzione asincrona
-	console.log("OPENAPII KEY: ", secrets.OPENAI_APIKEY);
+	console.log("OPENAPII KEY: ", OPENAI_APIKEY);
         const configuration = new Configuration({
-            apiKey: secrets.OPENAI_APIKEY,  // Recupera la chiave OpenAI da AWS
+            apiKey: OPENAI_APIKEY,  // Recupera la chiave OpenAI da AWS
         });
-
         openai = new OpenAIApi(configuration);
     } catch (error) {
         console.error('Errore durante il caricamento delle configurazioni OpenAI:', error);
     }
-})();
+}
 
 async function validateImage(imageBuffer, description) {
     if (!openai) {
@@ -41,4 +42,4 @@ async function validateImage(imageBuffer, description) {
     }
 }
 
-module.exports = { validateImage };
+module.exports = { validateImage, setup };
