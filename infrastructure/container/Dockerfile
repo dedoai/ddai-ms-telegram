@@ -20,7 +20,8 @@ COPY . .
 WORKDIR $APP_DIR
 
 # Install Node.js dependencies, including Sharp (which depends on libvips)
-RUN npm cache clean --force && npm install --legacy-peer-deps
+RUN npm install -g npm@latest && npm install --legacy-peer-deps
+#RUN npm cache clean --force && npm install --legacy-peer-deps
 #RUN npm install --legacy-peer-deps
 
 # Second stage: Production stage using AWS ECR Node.js image
