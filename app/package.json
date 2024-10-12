@@ -11,6 +11,7 @@
     "pg": "^8.7.1",
     "jimp":"latest",
     "aws-sdk": "^2.1030.0",
-    "node-cron": "^3.0.0"
+    "node-cron": "^3.0.0",
+    "openai": "^3.2.0"
   }
 }
