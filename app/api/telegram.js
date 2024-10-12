@@ -5,14 +5,17 @@ const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const { getSecret } = require('./config/index');
 
-// Abilita manualmente la cancellazione delle promesse
-TelegramBot.Promise = Promise;
 
-        // Carica le configurazioni da AWS Secrets Manager
-        const secrets = JSON.parse(await getSecret('dev/telegram'));
+        // Usa await correttamente in una funzione asincrona
+        const secret = await getSecret('dev/telegram');
+        const secrets = JSON.parse(secret);
         console.log("Il segreto è: ", secrets, typeof secrets);
         // Configura il bot Telegram con il token
         console.log("BOT TOKEN: ", secrets.TELEGRAM_KEY);
+
+
+// Abilita manualmente la cancellazione delle promesse
+TelegramBot.Promise = Promise;
 
 // Inizializza il bot correttamente
 const bot = new TelegramBot(secrets.TELEGRAM_KEY, { polling: true });
