@@ -8,7 +8,7 @@ FROM public.ecr.aws/eks-distro-build-tooling/nodejs:16.18.1-gcc-al23 as build-im
 RUN yum update -y && \
     yum groupinstall -y "Development Tools" && \
     yum install -y glib2 glib2-devel libjpeg-turbo libjpeg-turbo-devel libpng libpng-devel \
-    libtiff libtiff-devel libwebp libwebp-devel git
+    libtiff libtiff-devel libwebp libwebp-devel git gtk-doc
 
 # Install libvips from source
 RUN git clone https://github.com/libvips/libvips.git && \
