@@ -1,10 +1,15 @@
 // /src/api/telegram.js
-const { Bot, InputFile } = require('node-telegram-bot-api');
+const TelegramBot = require('node-telegram-bot-api');
 const { getUser, createUser } = require('../db/postgres');
 const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 
-const bot = new Bot(process.env.TELEGRAM_KEY, { polling: true });
+// Abilita manualmente la cancellazione delle promesse
+TelegramBot.Promise = Promise;
+
+// Inizializza il bot correttamente
+const bot = new TelegramBot(process.env.TELEGRAM_KEY, { polling: true });
+
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
