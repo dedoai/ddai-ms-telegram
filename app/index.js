@@ -5,10 +5,18 @@ const TelegramBot = require('node-telegram-bot-api');
 const reminders = require('./cron/reminders');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 
+console.log("Environment vars: ", process.env);
+
 (async () => {
     try {
 	// Crea un nuovo client SecretsManager
-	const client = new SecretsManagerClient({ region: "us-west-2" }); // Sostituisci con la tua regione AWS
+	const client = new SecretsManagerClient(
+		{ region: "us-east-1" },
+		credentials: {
+    			accessKeyId: process.env.AWS_KEY,       // Prendi la chiave AWS dall'ambiente
+    			secretAccessKey: process.env.AWS_SECRET // Prendi il secret dall'ambiente
+  		}
+	); 
 	// Funzione per recuperare il segreto
 	async function getSecret(secretName) {
 	  const command = new GetSecretValueCommand({ SecretId: secretName });
@@ -46,5 +54,6 @@ const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client
         reminders(bot, secrets);
     } catch (error) {
         console.error('Errore durante il caricamento delle configurazioni o l\'avvio del bot:', error);
+	precess.exit(1);
     }
 })();
