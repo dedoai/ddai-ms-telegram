@@ -6,12 +6,13 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "dotenv": "^10.0.0",
-    "node-telegram-bot-api": "^0.57.0",
-    "pg": "^8.7.1",
-    "jimp":"latest",
+    "@aws-sdk/client-secrets-manager": "^3.670.0",
     "aws-sdk": "^2.1030.0",
+    "dotenv": "^10.0.0",
+    "jimp": "latest",
     "node-cron": "^3.0.0",
-    "openai": "^3.2.0"
+    "node-telegram-bot-api": "^0.57.0",
+    "openai": "^3.2.0",
+    "pg": "^8.7.1"
   }
 }
