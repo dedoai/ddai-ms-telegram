@@ -1,25 +1,34 @@
 // /src/config/index.js
 const AWS = require('aws-sdk');
 
-// Configurazione di AWS SDK
-const secretsManager = new AWS.SecretsManager({
-    accessKeyId: process.env.AWS_KEY,  // Queste chiavi possono ancora provenire da env o IAM
-    secretAccessKey: process.env.AWS_SECRET,
-    region: 'us-east-1',
-});
 
-async function getSecret(secretName) {
-    try {
-        const data = await secretsManager.getSecretValue({ SecretId: secretName }).promise();
-        if ('SecretString' in data) {
-            return JSON.parse(data.SecretString);
-        } else {
-            throw new Error('Secret string is missing');
+        // Crea un nuovo client SecretsManager
+        const client = new SecretsManagerClient(
+                {
+                        region: "us-east-1",
+                        credentials: {
+                                accessKeyId: process.env.AWS_KEY.trim(),       // Prendi la chiave AWS dall'ambiente
+                                secretAccessKey: process.env.AWS_SECRET.trim() // Prendi il secret dall'ambiente
+                        }
+                }
+        );
+        // Funzione per recuperare il segreto
+        async function getSecret(secretName) {
+          const command = new GetSecretValueCommand({ SecretId: secretName });
+          try {
+            const data = await client.send(command);
+            if ("SecretString" in data) {
+              return data.SecretString;
+            } else {
+              const buff = Buffer.from(data.SecretBinary, "base64");
+              return buff.toString("ascii");
+            }
+          } catch (err) {
+            console.error(err);
+            throw err;
+          }
         }
-    } catch (err) {
-        console.error(`Errore durante il recupero del secret ${secretName}:`, err);
-        throw err;
-    }
-}
+
+
 
 module.exports = { getSecret };
