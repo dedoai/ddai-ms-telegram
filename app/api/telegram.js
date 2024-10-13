@@ -4,13 +4,7 @@ const { getUser, createUser } = require('../db/postgres');
 const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const secrets  = require('../config/index');
-
-
-        // Usa await correttamente in una funzione asincrona
-        console.log("Il segreto è: ", secrets, typeof secrets);
-        // Configura il bot Telegram con il token
-        console.log("BOT TOKEN: ", secrets.TELEGRAM_KEY);
-
+const openai = require('../utils/openai.js');
 
 // Abilita manualmente la cancellazione delle promesse
 TelegramBot.Promise = Promise;
@@ -20,6 +14,7 @@ var bot;
 var TOKEN;
 
 async function callback (msg) {
+    console.log( msg );
     const chatId = msg.chat.id;
     const telegramId = msg.from.id;
 
@@ -36,19 +31,32 @@ async function callback (msg) {
 
             // Process and validate image with OpenAI/ChatGPT
             const processedImage = await processImage(filePath);
-            const validation = await validateWithChatGPT(processedImage, msg.chat.topic);
-
+            const validation = await openai.validateImage( processedImage, msg.chat.topic );
+		// validateWithChatGPT(processedImage, msg.chat.topic);
+	    console.log("Validation dump ", validation );
             if (validation.valid) {
                 const s3Path = `cd4id-${msg.chat.topic}/dataset-${user.id}/shasum.ext`;
                 await uploadToS3(s3Path, processedImage);
 
                 // Notifica di successo
-                bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato.");
+                bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato.",{
+                    message_thread_id: msg.message_thread_id
+                });
             } else {
-                bot.sendMessage(chatId, "L'immagine non è conforme. Riprovaci con una nuova immagine.");
+                bot.sendMessage(chatId, "L'immagine non è conforme. Riprovaci con una nuova immagine.",{
+                    message_thread_id: msg.message_thread_id
+                });
             }
         } else {
-            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.");
+//            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", msg.message_thread_id);
+		// Verifica se esiste il message_thread_id per i forum
+            if (msg.message_thread_id) {
+                await bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", {
+                    message_thread_id: msg.message_thread_id
+                });
+            } else {
+                await bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.");
+            }
         }
     } catch (error) {
         console.error(error);
