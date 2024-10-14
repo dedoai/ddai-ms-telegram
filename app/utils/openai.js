@@ -23,8 +23,6 @@ async function setup(OPENAI_APIKEY) {
     }
 }
 
-var AGRIFOOD = "image that contrasts ripe and unripe fruits and vegetables in an agrifood context. On one side of the image, show ripe, vibrant fruits and vegetables like tomatoes, peppers, apples, and oranges being harvested by farmers, with bright colors indicating full ripeness. The fruits should look plump and ready for consumption, while the farmers are using baskets or crates to collect them in a well-maintained field under clear skies. On the other side, depict unripe produce, still on the plants or trees, with duller or greener shades indicating they aren't ready for harvest yet. Include workers inspecting but leaving these unharvested. The field should have a more subdued feel on this side, showing the natural progression of growth and the importance of picking at the right time."
-
 async function validateImage(filePath, description) {
     if (!openai) {
         throw new Error('OpenAI non è configurato correttamente');
@@ -79,4 +77,66 @@ async function validateImageFromBuffer(imageBuffer, description) {
     }
 }
 
-module.exports = { validateImage, setup };
+const contextGeneral = "Benvenuto nella piattaforma ufficiale di caricamento dati per le Call for Data (C4D) di DedoAI. "
+                +"Qui potrai partecipare a diverse iniziative di raccolta dati e guadagnare DEDO Token in cambio dei tuoi contributi. "
+                +"Ogni Call for Data rappresenta una richiesta specifica da parte di consumatori di dati, che necessitano di dataset per migliorare "
+                +"l'addestramento dei loro sistemi di intelligenza artificiale. Come partecipante, "
+                +"avrai la possibilità di scegliere il Topic più adatto alle tue competenze e caricare i file richiesti direttamente nella piattaforma."
+                +"Per ogni dataset completato, riceverai 200 DEDO Token, equivalenti a circa 12$, come ricompensa per il tuo contributo. " 
+                +"Assicurati di seguire le linee guida del Topic scelto per massimizzare i tuoi guadagni e contribuire con dati di qualità che possano "
+                +" essere validati dalla nostra piattaforma. Non vediamo l'ora di vedere i tuoi dataset! Se hai domande o bisogno di assistenza, sentiti libero di chiedere." 
+
+async function answerFromGeneralMessage( user, question ) {
+    if (!openai) {
+        throw new Error('OpenAI non è configurato correttamente');
+    }
+
+    try {
+        const response = await openai.createChatCompletion({
+            model: "gpt-4",
+            messages: [
+                { role: "system", content: contextGeneral },
+                { role: "user", content: "Crea una risposta per l'utente " + user + " che mi ci chiede questo: " + question },
+            ],
+        });
+
+        const result = response.data.choices[0].message.content;
+        console.log("answerFromGeneralMessage result ", result);
+        return result;
+    } catch (error) {
+        console.error("Errore con l'API di OpenAI:", error);
+        return { valid: false, score: null };
+    }
+}
+
+var AGRIFOOD = "images that contrasts ripe and unripe fruits and vegetables in an agrifood context. On one side of the image, show ripe, vibrant fruits and vegetables like tomatoes, peppers, apples, and oranges being harvested by farmers, with bright colors indicating full ripeness. The fruits should look plump and ready for consumption, while the farmers are using baskets or crates to collect them in a well-maintained field under clear skies. On the other side, depict unripe produce, still on the plants or trees, with duller or greener shades indicating they aren't ready for harvest yet. Include workers inspecting but leaving these unharvested. The field should have a more subdued feel on this side, showing the natural progression of growth and the importance of picking at the right time."
+
+
+async function answerFromC4DTopicMessage( user, question, c4d, activity ) {
+    if (!openai) {
+        throw new Error('OpenAI non è configurato correttamente');
+    }
+
+    try {
+        let contextTopic = c4d.description;
+        console.log("CONTEXT: ", contextTopic);
+        const response = await openai.createChatCompletion({
+            model: "gpt-4",
+            messages: [
+                { role: "system", content: contextTopic },
+                { role: "user", content: "Crea una risposta per l'utente " + user.username + " che mi ci chiede questo: " + question + ". Considera il suo ruolo di Producer di Immagini inerenti la Call for Data: ("+ contextTopic +") di DedoAI. L'attività che lui ha già fatto è rappresentata dal seguente JSON " + JSON.stringify(activity) + " Puoi usare questa informazione per dargli un resoconto" },
+            ],
+        });
+
+        const result = response.data.choices[0].message.content;
+        console.log("answerFromC4DTopicMessage result ", result);
+        return result;
+    } catch (error) {
+        console.error("Errore con l'API di OpenAI:", error);
+        return { valid: false, score: null };
+    }
+}
+
+
+
+module.exports = { validateImage, setup, answerFromGeneralMessage, answerFromC4DTopicMessage };

@@ -1,8 +1,6 @@
 // /src/config/index.js
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 
-const AWS = require('aws-sdk');
-
         // Crea un nuovo client SecretsManager
         const client = new SecretsManagerClient(
                 {

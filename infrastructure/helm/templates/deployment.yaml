@@ -21,6 +21,12 @@ spec:
           ports:
             - containerPort: 80
           env:
+            - name: WEB_HOOK
+              valueFrom:
+                configMapKeyRef:
+                  name: ddai-ms-telegram
+                  key: WEB_HOOK
+
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:
