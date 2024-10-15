@@ -23,37 +23,26 @@ spec:
           env:
             - name: PORT
               value: 8080
-              
-            - name: WEB_HOOK
-              valueFrom:
-                configMapKeyRef:
-                  name: ddai-ms-telegram
-                  key: WEB_HOOK
-
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:
                   name: ddai-ms-telegram
                   key: DB_URL
-
             - name: BUCKET_S3
               valueFrom:
                 configMapKeyRef:
                   name: ddai-ms-telegram
                   key: BUCKET_S3
-
             - name: REM_DELAY
               valueFrom:
                 configMapKeyRef:
                   name: ddai-ms-telegram
                   key: REM_DELAY
-
             - name: AWS_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-credentials
                   key: AWS_KEY
-
             - name: AWS_SECRET
               valueFrom:
                 secretKeyRef:
