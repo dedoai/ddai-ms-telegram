@@ -5,7 +5,7 @@ const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const secrets  = require('../config/index');
 const openai = require('../utils/openai.js');
-const Uploader = require('..(utils/uploader.js');
+const Uploader = require('../utils/uploader.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -49,21 +49,34 @@ async function callback (msg) {
             const filePath = await bot.downloadFile(fileId, './temp');
 
             // Process and validate image with OpenAI/ChatGPT
-            const processedImage = await processImage(filePath);
-            const validation = await openai.validateImage( processedImage, topic );
+//            const processedImage = await processImage(filePath);
+//            const validation = await openai.validateImage( processedImage, topic );
 
             // validateWithChatGPT(processedImage, topic);
-	        console.log("Validation dump ", validation );
-            if (validation.valid) {
-                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
-                await dedo.handleDatasetUpload(user.id, c4d,filePath )
+//	        console.log("Validation dump ", validation );
+            if (true || validation.valid) {
+//                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
+//                await dedo.handleDatasetUpload(user.id, c4d,filePath )
 
                 // TODO ADD DB:
-//                let uploader = new Uploader(filePath, c4d. );
-                // Notifica di successo
-                bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato.",{
-                    message_thread_id: msg.message_thread_id
+                let uploader = new Uploader(filePath,  user.id, c4d.data_type, {}, dataset.id, "dataset");
+                uploader.upload().then(success => {
+                    if (success) {
+                        console.log('Upload completed successfully');
+                                        // Notifica di successo
+                        bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato. " ,{
+                             message_thread_id: msg.message_thread_id
+                        });
+                    } else {
+                        console.log('Upload failed');
+                        // Notifica di successo
+                        bot.sendMessage(chatId, "Al momento il servizio di Upload non è disponibile. " ,{
+                            message_thread_id: msg.message_thread_id
+                        });
+                    }
                 });
+
+
             } else {
                 bot.sendMessage(chatId, "L'immagine non è conforme. Riprovaci con una nuova immagine.",{
                     message_thread_id: msg.message_thread_id

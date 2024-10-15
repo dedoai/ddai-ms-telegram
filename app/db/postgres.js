@@ -72,7 +72,7 @@ async function manageDataset(telegramTopic, userId, c4d ) {
         // 5. Controlla se il dataset è completato rispetto al limite impostato
         if (fileCount >= c4d.dataset_limit) {
             dataset = await createDataset(userId, c4d.id);
-            return { message: 'Dataset limit reached. New dataset created.', dataset, c4d };
+            return { message: 'Dataset limit reached. New dataset created.', fileCount, dataset, c4d };
         }
 
         // 6. Se il dataset non è ancora completato, restituisci il dataset esistente
