@@ -10,7 +10,7 @@ async function connect (){
     console.log("secret recuperati per Postgres: ", secrets);
     pool = new Pool({
         user: secrets.username,
-        host: 'localhost',
+        host: process.env.DB_URL,
         database: 'dedoai',
         password: secrets.password,
         port: 5432,
