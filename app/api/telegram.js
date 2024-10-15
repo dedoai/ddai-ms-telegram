@@ -60,7 +60,7 @@ async function callback(msg) {
                 //                await dedo.handleDatasetUpload(user.id, c4d,filePath )
 
                 // TODO ADD DB:
-                new Uploader('app/' + filePath, user.id, c4d.data_type, {}, dataset.dataset.id, "datasets")
+                new Uploader(filePath, user.id, c4d.data_type, {}, dataset.dataset.id, "datasets")
                     .upload().then(success => {
                         if (success) {
                             console.log('Upload completed successfully');

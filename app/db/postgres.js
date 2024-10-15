@@ -6,7 +6,7 @@ const { getSecret } = require('../config/index');
 var pool;
 
 async function connect (){
-    const secrets = JSON.parse(await getSecret('rds!db-328bc97f-8f6d-4cb8-a9e2-1ca01c0e88d1'));
+    const secrets = JSON.parse(await getSecret(process.env.DB_SEC));
     console.log("secret recuperati per Postgres: ", secrets);
     pool = new Pool({
         user: secrets.username,

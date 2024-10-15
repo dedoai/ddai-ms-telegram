@@ -33,6 +33,11 @@ spec:
                 configMapKeyRef:
                   name: ddai-ms-telegram
                   key: DB_URL
+            - name: DB_SEC
+              valueFrom:
+                configMapKeyRef:
+                  name: ddai-ms-telegram
+                  key: DB_SEC
             - name: BUCKET_S3
               valueFrom:
                 configMapKeyRef:
