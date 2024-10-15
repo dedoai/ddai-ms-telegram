@@ -38,9 +38,9 @@ class Uploader {
                 }
             });
 
-            const { uploadId, fileNme, bucketName } = initResponse.data;
+            const { uploadId, fileName, bucketName } = initResponse.data.data;
             this.currentUploadId = uploadId;
-            this.currentFileName = fileNme;
+            this.currentFileName = fileName;
             this.bucketName = bucketName;
             console.log(`Success init upload. UploadId: ${uploadId}`);
 
@@ -69,7 +69,7 @@ class Uploader {
                     }
                 });
 
-                const { eTag } = chunkResponse.data;
+                const { eTag } = chunkResponse.data.data;
                 parts.push({ partNumber, eTag });
 
                 console.log(`Chunk ${partNumber}/${totalChunks} successfully uploaded`);

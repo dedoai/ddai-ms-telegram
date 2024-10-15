@@ -8,7 +8,8 @@ const openai = require('../utils/openai.js');
 const Uploader = require('../utils/uploader.js');
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const path = require('path');
+const fs = require('fs').promises;
 
 // Abilita manualmente la cancellazione delle promesse
 TelegramBot.Promise = Promise;
@@ -59,7 +60,7 @@ async function callback (msg) {
 //                await dedo.handleDatasetUpload(user.id, c4d,filePath )
 
                 // TODO ADD DB:
-                let uploader = new Uploader(filePath,  user.id, c4d.data_type, {}, dataset.id, "dataset");
+                let uploader = new Uploader('app/'+filePath,  user.id, c4d.data_type, {}, dataset.dataset.id, "datasets");
                 uploader.upload().then(success => {
                     if (success) {
                         console.log('Upload completed successfully');
@@ -97,7 +98,7 @@ async function callback (msg) {
             }
         }
     } catch (error) {
-        console.error(error);
+        console.error(error.stack);
 //        bot.sendMessage(chatId, "Si è verificato un errore. Riprova più tardi."); // TODO: capire
     }
 }

@@ -1,3 +1,5 @@
 app/.env
 app/configmap_dev.yaml
 app/eks_secret_dev.yaml
+
+.vscode/launch.json
