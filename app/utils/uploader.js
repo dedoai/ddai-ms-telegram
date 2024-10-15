@@ -83,7 +83,7 @@ class Uploader {
                 entityId: this.entityId,
                 entityName: this.entityName,
                 parts,
-                metadata: this.metadata
+                metadata: this.metadata,
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ class Uploader {
                 }
             });
 
-            const { bucketUrl } = completeResponse.data;
+            const { bucketUrl } = completeResponse.data.data;
             this.bucketUrl = bucketUrl;
 
             console.log(`Successfully completed upload: ${bucketUrl}`);
@@ -134,5 +134,4 @@ class Uploader {
         }
     }
 }
-
 module.exports = Uploader;
