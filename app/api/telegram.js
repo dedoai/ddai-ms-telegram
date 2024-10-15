@@ -5,6 +5,7 @@ const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const secrets  = require('../config/index');
 const openai = require('../utils/openai.js');
+const Uploader = require('..(utils/uploader.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -58,7 +59,7 @@ async function callback (msg) {
                 await dedo.handleDatasetUpload(user.id, c4d,filePath )
 
                 // TODO ADD DB:
-
+//                let uploader = new Uploader(filePath, c4d. );
                 // Notifica di successo
                 bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato.",{
                     message_thread_id: msg.message_thread_id

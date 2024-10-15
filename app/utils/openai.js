@@ -82,7 +82,8 @@ const contextGeneral = "Benvenuto nella piattaforma ufficiale di caricamento dat
                 +"Ogni Call for Data rappresenta una richiesta specifica da parte di consumatori di dati, che necessitano di dataset per migliorare "
                 +"l'addestramento dei loro sistemi di intelligenza artificiale. Come partecipante, "
                 +"avrai la possibilità di scegliere il Topic più adatto alle tue competenze e caricare i file richiesti direttamente nella piattaforma."
-                +"Per ogni dataset completato, riceverai 200 DEDO Token, equivalenti a circa 12$, come ricompensa per il tuo contributo. " 
+                +"Per ogni dataset completato, riceverai 200 DEDO Token, come ricompensa per il tuo contributo. " 
+                +"dedoAI è un progetto cryptocurrency che vedrà il suo avvio nei prossimi mesi, e tu potrai effettuare il cambio dei tuoi  Token non appena online"
                 +"Assicurati di seguire le linee guida del Topic scelto per massimizzare i tuoi guadagni e contribuire con dati di qualità che possano "
                 +" essere validati dalla nostra piattaforma. Non vediamo l'ora di vedere i tuoi dataset! Se hai domande o bisogno di assistenza, sentiti libero di chiedere." 
 
