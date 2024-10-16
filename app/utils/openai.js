@@ -4,6 +4,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const fs = require('fs').promises;
 const path = require('path');
 const axios = require('axios'); // Potresti aver bisogno di axios per chiamate API esterne
+const { getAllTopicsAndDescriptions } = require('../db/postgres.js');
 
 let openai;
 var TOKEN;
@@ -77,19 +78,30 @@ async function validateImageFromBuffer(imageBuffer, description) {
     }
 }
 
-const contextGeneral = "Benvenuto nella piattaforma ufficiale di caricamento dati per le Call for Data (C4D) di DedoAI. "
-                +"Qui potrai partecipare a diverse iniziative di raccolta dati e guadagnare DEDO Token in cambio dei tuoi contributi. "
-                +"Ogni Call for Data rappresenta una richiesta specifica da parte di consumatori di dati, che necessitano di dataset per migliorare "
-                +"l'addestramento dei loro sistemi di intelligenza artificiale. Come partecipante, "
-                +"avrai la possibilità di scegliere il Topic più adatto alle tue competenze e caricare i file richiesti direttamente nella piattaforma."
-                +"Per ogni dataset completato, riceverai 200 DEDO Token, come ricompensa per il tuo contributo. " 
-                +"dedoAI è un progetto cryptocurrency che vedrà il suo avvio nei prossimi mesi, e tu potrai effettuare il cambio dei tuoi  Token non appena online"
-                +"Assicurati di seguire le linee guida del Topic scelto per massimizzare i tuoi guadagni e contribuire con dati di qualità che possano "
-                +" essere validati dalla nostra piattaforma. Non vediamo l'ora di vedere i tuoi dataset! Se hai domande o bisogno di assistenza, sentiti libero di chiedere." 
+var c4dInfo;
+var contextGeneral;
+async function hydrate(){
+    c4dInfo = await getAllTopicsAndDescriptions();
+    contextGeneral = "Benvenuto nella piattaforma ufficiale di caricamento dati per le Call for Data (C4D) di DedoAI. "
+    +"Qui potrai partecipare a diverse iniziative di raccolta dati e guadagnare DEDO Token in cambio dei tuoi contributi. "
+    +"Ogni Call for Data rappresenta una richiesta specifica da parte di consumatori di dati, che necessitano di dataset per migliorare "
+    +"l'addestramento dei loro sistemi di intelligenza artificiale. Come partecipante, "
+    +"avrai la possibilità di scegliere il Topic più adatto alle tue competenze e caricare i file richiesti direttamente nella piattaforma."
+    +"Per ogni dataset completato, riceverai 200 DEDO Token, come ricompensa per il tuo contributo. " 
+    +"dedoAI è un progetto cryptocurrency che vedrà il suo avvio nei prossimi mesi, e tu potrai effettuare il cambio dei tuoi  Token non appena online"
+    +"Assicurati di seguire le linee guida del Topic scelto per massimizzare i tuoi guadagni e contribuire con dati di qualità che possano "
+    +" essere validati dalla nostra piattaforma. Non vediamo l'ora di vedere i tuoi dataset! Se hai domande o bisogno di assistenza, sentiti libero di chiedere."
+    +"Le informazioni sul Topic disponibili e le loro descrizioni sono in questo JSON: " + JSON.stringify(c4dInfo)
+    +"Tienile a mente se l'utente chiede"
+    +"Rispondi di base in inglese o nella lingua di scrittura dell'utente" 
+}
 
 async function answerFromGeneralMessage( user, question ) {
     if (!openai) {
         throw new Error('OpenAI non è configurato correttamente');
+    }
+    if( !contextGeneral ){
+        await hydrate();
     }
 
     try {

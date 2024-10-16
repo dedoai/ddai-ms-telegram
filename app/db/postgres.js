@@ -22,6 +22,16 @@ connect();
 
 //setInterval(connect, 100000);
 
+async function getAllTopicsAndDescriptions() {
+    try {
+        const res = await pool.query('SELECT telegram_topic, description FROM c4d');
+        return res.rows; // Restituisce un array di oggetti con topic e description
+    } catch (err) {
+        console.error('Errore durante il recupero dei dati:', err);
+        throw err; // Puoi gestire l'errore come preferisci
+    }
+}
+
 async function getC4DByTopic(telegramTopic) {
     const res = await pool.query('SELECT * FROM c4d WHERE telegram_topic = $1', [telegramTopic]);
     return res.rows[0];
@@ -114,7 +124,7 @@ async function getUserActivityInC4D(userId, c4dId) {
         const fileCountRes = await pool.query(
             `SELECT COUNT(*) AS file_count
              FROM files 
-             WHERE entity_name = 'dataset' 
+             WHERE entity_name = 'datasets' 
              AND entity_id IN (SELECT id FROM datasets WHERE user_id = $1 AND c4d_id = $2)`,
             [userId, c4dId]
         );
@@ -200,5 +210,5 @@ async function showUserActivity(userId, c4dId) {
         console.error('Error showing user activity:', error);
     }
 }
-module.exports = { getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, validateDatasetIfComplete };
+module.exports = { getAllTopicsAndDescriptions, getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, validateDatasetIfComplete };
 
