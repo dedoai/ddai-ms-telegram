@@ -145,6 +145,7 @@ async function listen(TOKENAPI, WEBHOOK) {
 
     // Endpoint che Telegram chiamerà per il Webhook
     app.post('/bot', (req, res) => {
+        
         bot.processUpdate(req.body); // Invia l'aggiornamento a TelegramBot per la gestione
         res.sendStatus(200); // Invia una risposta HTTP 200 a Telegram
     });
@@ -168,4 +169,4 @@ async function start(TOKENAPI) {
     bot.on('message', callback);
 }
 
-module.exports = { start };
+module.exports = { start, listen };
