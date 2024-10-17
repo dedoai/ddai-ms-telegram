@@ -28,7 +28,7 @@ class Uploader {
         console.log(`Starting upload: ${fileName}`);
 
         try {
-            console.log('Init upload...');
+            console.log('Init upload...', `${SERVER_URL}/init-upload`);
             const initResponse = await post(`${SERVER_URL}/init-upload`, {
                 contentType: this.fileType
             }, {
@@ -61,13 +61,15 @@ class Uploader {
                 formData.append('uploadId', this.currentUploadId);
                 formData.append('fileName', this.currentFileName);
 
-                console.log(`Sending chunk ${partNumber}/${totalChunks}`);
+                console.log(`Sending chunk ${partNumber}/${totalChunks}`, `${SERVER_URL}/upload-chunk`);
                 const chunkResponse = await post(`${SERVER_URL}/upload-chunk`, formData, {
                     headers: {
                         ...formData.getHeaders(),
                         'principalid': this.token
                     }
                 });
+
+                console.log(`Sended chunk ${partNumber}/${totalChunks}`);
 
                 const { eTag } = chunkResponse.data.data;
                 parts.push({ partNumber, eTag });
@@ -93,7 +95,7 @@ class Uploader {
 
             const { bucketUrl } = completeResponse.data.data;
             this.bucketUrl = bucketUrl;
-            
+
             console.log(`Successfully completed upload: ${bucketUrl}`);
             return true;
         } catch (error) {
