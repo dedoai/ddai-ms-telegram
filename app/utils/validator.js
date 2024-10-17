@@ -15,7 +15,7 @@ async function validate (filePath, description, c4ddescr) {
     const fileBuffer = fs.readFileSync(absolutePath);
 
       const question = "the images must respect this rule:("+ c4ddescr +") I need you to answer me with a json with 'status' -> that is ('SUCCESS' or 'ERROR', in case of error code I want a field description with the description of why it does not respect the request), if it is \"SUCCESS\" I expect a \"score\" -> that is from 0 to 1 in float format, like 1.00 if it follows the request, 0.78 if it does not fully respect it etc, I only want the json minified as response and nothing else, in English, I need to be able to copy it or unmarshal it from other tools. User input as metadata is: \"description\"";
-
+      console.log("Validator question ", question)
 //      const compressedImage = await sharp(image)
 //        .resize(512, 512)
 //        .toBuffer();

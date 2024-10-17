@@ -74,24 +74,30 @@ async function callback(msg) {
 
             // validateWithChatGPT(processedImage, topic);
             //	        console.log("Validation dump ", validation );
-            let validation = validator.validate(filePath, msg.chat, c4d.description );
+            let validation = await validator.validate(filePath, msg.chat, c4d.description );
+            console.log("Validation ", validation );
             if ( validation.status != "ERROR" ) {
                 //                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
                 //                await dedo.handleDatasetUpload(user.id, c4d,filePath )
-
                 // TODO ADD DB:
-                new Uploader(filePath, user.id, c4d.data_type, {description:msg.chat}, dataset.dataset.id, "datasets")
-                    .upload().then(success => {
+
+                new Uploader(filePath, user.id, c4d.data_type, {description:msg.chat, score: validation.score }, dataset.dataset.id, "datasets")
+                    .upload()
+                    .then( async (success) => {
                         if (success) {
                             console.log('Upload completed successfully');
-                            // Notifica di successo
-                            bot.sendMessage(chatId, "Complimenti! La tua immagine è stata accettata e il tuo credito in DEDO Token è stato aggiornato. ", {
+                            let activity = await getUserActivityInC4D(user.id, c4d.id);
+                            console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
+                            let text = "Congratulations! Your image has been accepted, and your DEDO Token credit has been updated. | Fai vedere le activity in modo testuale/eleco e non JSON"
+                            let answer = await openai.answerFromC4DTopicMessage(username, text, c4d, activity);
+                            bot.sendMessage(chatId, answer, {
                                 message_thread_id: msg.message_thread_id
                             });
+                            // Notifica di successo
                         } else {
                             console.log('Upload failed');
                             // Notifica di successo
-                            bot.sendMessage(chatId, "Al momento il servizio di Upload non è disponibile. ", {
+                            bot.sendMessage(chatId, username+" Al momento il servizio di Upload non è disponibile. ", {
                                 message_thread_id: msg.message_thread_id
                             });
                         }
@@ -99,7 +105,7 @@ async function callback(msg) {
 
 
             } else {
-                bot.sendMessage(chatId, validation.description, {
+                bot.sendMessage(chatId, username + " " + validation.description, {
                     message_thread_id: msg.message_thread_id
                 });
             }
@@ -108,9 +114,9 @@ async function callback(msg) {
             //            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", msg.message_thread_id);
             // Verifica se esiste il message_thread_id per i forum
             let activity = await getUserActivityInC4D(user.id, c4d.id);
-            console.log("getUserActivityInC4D", activity, user.id, c4d.id)
+            console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
             let answer = await openai.answerFromC4DTopicMessage(user, msg.text, c4d, activity);
-            if (msg.message_thread_id) {
+            if ( msg.message_thread_id ) {
                 await bot.sendMessage(chatId, answer, {
                     message_thread_id: msg.message_thread_id
                 });

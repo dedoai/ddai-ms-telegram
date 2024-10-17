@@ -4,8 +4,8 @@
   "description": "Telegram bot with AWS integration",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.670.0",

@@ -93,7 +93,7 @@ class Uploader {
 
             const { bucketUrl } = completeResponse.data.data;
             this.bucketUrl = bucketUrl;
-
+            
             console.log(`Successfully completed upload: ${bucketUrl}`);
             return true;
         } catch (error) {
