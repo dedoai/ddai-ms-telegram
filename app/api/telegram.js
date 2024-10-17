@@ -99,18 +99,19 @@ async function callback(msg) {
                             // Notifica di successo
                             bot.sendMessage(chatId, username+" We apologize, but the upload service is currently unavailable. Please try again later. ", {
                                 message_thread_id: msg.message_thread_id
-                            });
+                            });                
                         }
+                        if( filePath )
+                            fs.unlink( filePath );
                     });
-
 
             } else {
                 bot.sendMessage(chatId, username + " " + validation.description, {
                     message_thread_id: msg.message_thread_id
                 });
+                if( filePath )
+                    fs.unlink( filePath );    
             }
-            if( filePath )
-                fs.unlink( filePath );
         } else {
             console.log("Sezione risposte senza photo");
             //            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", msg.message_thread_id);

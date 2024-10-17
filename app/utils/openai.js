@@ -82,19 +82,19 @@ var c4dInfo;
 var contextGeneral;
 async function hydrate(){
     c4dInfo = await getAllTopicsAndDescriptions();
-    contextGeneral = "Benvenuto nella piattaforma ufficiale di caricamento dati per le Call for Data (C4D) di DedoAI. "
-    +"Qui potrai partecipare a diverse iniziative di raccolta dati e guadagnare DEDO Token in cambio dei tuoi contributi. "
-    +"Ogni Call for Data rappresenta una richiesta specifica da parte di consumatori di dati, che necessitano di dataset per migliorare "
-    +"l'addestramento dei loro sistemi di intelligenza artificiale. Come partecipante, "
-    +"avrai la possibilità di scegliere il Topic più adatto alle tue competenze e caricare i file richiesti direttamente nella piattaforma."
-    +"Per ogni dataset completato, riceverai 200 DEDO Token, come ricompensa per il tuo contributo. " 
-    +"dedoAI è un progetto cryptocurrency che vedrà il suo avvio nei prossimi mesi, e tu potrai effettuare il cambio dei tuoi  Token non appena online"
-    +"Assicurati di seguire le linee guida del Topic scelto per massimizzare i tuoi guadagni e contribuire con dati di qualità che possano "
-    +" essere validati dalla nostra piattaforma. Non vediamo l'ora di vedere i tuoi dataset! Se hai domande o bisogno di assistenza, sentiti libero di chiedere."
-    +"Le informazioni sul Topic disponibili e le loro descrizioni sono in questo JSON: " + JSON.stringify(c4dInfo)
-    +"Tienile a mente se l'utente chiede"
-    +"Rispondi di base in inglese o nella lingua di scrittura dell'utente" 
+    contextGeneral =     + "Here, you can participate in various data collection initiatives and earn DEDO Tokens in exchange for your contributions. "
+    + "Each Call for Data represents a specific request from data consumers who need datasets to improve the training of their artificial intelligence systems. As a participant, "
+    + "you will have the opportunity to choose the Topic that best fits your expertise and upload the required files directly to the platform."
+    + "For every completed dataset, you will receive 200 DEDO Tokens as a reward for your contribution. "
+    + "dedoAI is a cryptocurrency project set to launch in the coming months, and you will be able to exchange your Tokens once we go live."
+    + "Make sure to follow the guidelines of the chosen Topic to maximize your earnings and contribute quality data that can "
+    + "be validated by our platform. We look forward to seeing your datasets! If you have any questions or need assistance, feel free to ask."
+    + "The available Topic information and their descriptions are in this JSON: " + JSON.stringify(c4dInfo)
+    + "Keep them in mind if the user asks."
+    + "Respond primarily in English or in the user's writing language." 
 }
+
+
 
 async function answerFromGeneralMessage( user, question ) {
     if (!openai) {
@@ -105,11 +105,18 @@ async function answerFromGeneralMessage( user, question ) {
     }
 
     try {
+        console.log("answerFromGeneralMessage", question);
+        let content;
+        if( question ){
+            content = "Anwer the Producer " + user + " that wrote us: " + question;
+        }else{
+            content = "Say hello and welcome the new customer"
+        }
         const response = await openai.createChatCompletion({
             model: "gpt-4",
             messages: [
                 { role: "system", content: contextGeneral },
-                { role: "user", content: "Crea una risposta per l'utente " + user + " che mi ci chiede questo: " + question },
+                { role: "user", content: content },
             ],
         });
 
