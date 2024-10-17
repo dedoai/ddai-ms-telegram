@@ -110,7 +110,7 @@ async function callback(msg) {
                 });
             }
             if( filePath )
-                fs.unlinkSync( filePath );
+                fs.unlink( filePath );
         } else {
             console.log("Sezione risposte senza photo");
             //            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", msg.message_thread_id);
