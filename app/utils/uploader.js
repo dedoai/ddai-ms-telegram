@@ -3,7 +3,7 @@ const { basename } = require('path');
 const { post } = require('axios');
 const FormData = require('form-data');
 
-const CHUNK_SIZE = 30 * 1024 * 1024; // 30 MB
+const CHUNK_SIZE = 30 * 1024 * 1024; // 30 Mbit
 const SERVER_URL = process.env.SERVER_URL; // 'https://api.dev.dedoai.org/v1/upload-dataset';
 
 class Uploader {
@@ -50,7 +50,7 @@ class Uploader {
 
             for (let partNumber = 1; partNumber <= totalChunks; partNumber++) {
                 const start = (partNumber - 1) * CHUNK_SIZE;
-                const end = Math.min(start + CHUNK_SIZE, fileSize);
+                const end = Math.min(start + CHUNK_SIZE, fileSize)-1;
                 const chunk = createReadStream(this.filePath, { start, end });
 
                 console.log(`Preparing chunk ${partNumber}/${totalChunks}`);
@@ -61,13 +61,17 @@ class Uploader {
                 formData.append('uploadId', this.currentUploadId);
                 formData.append('fileName', this.currentFileName);
 
-                console.log(`Sending chunk ${partNumber}/${totalChunks}`, `${SERVER_URL}/upload-chunk`);
+                console.log(`Sending chunk ${partNumber}/${totalChunks}`, `${SERVER_URL}/upload-chunk`, formData.getHeaders());
+
                 const chunkResponse = await post(`${SERVER_URL}/upload-chunk`, formData, {
                     headers: {
-                        ...formData.getHeaders(),
-                        'principalid': this.token
+                        'content-type':'multipart/form-data',
+                        'principalid': this.token                        
+                    },
+                    onUploadProgress:(pe)=>{
+                        console.log(">> progress upload", pe)
                     }
-                });
+                });    
 
                 console.log(`Sended chunk ${partNumber}/${totalChunks}`);
 

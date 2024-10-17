@@ -80,8 +80,8 @@ async function callback(msg) {
                 //                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
                 //                await dedo.handleDatasetUpload(user.id, c4d,filePath )
                 // TODO ADD DB:
-
-                new Uploader(filePath, user.id, c4d.data_type, {description:msg.chat, score: validation.score }, dataset.dataset.id, "datasets")
+                // 
+                new Uploader(filePath, user.id, c4d.data_type, {description: msg.text, score: validation.score }, dataset.dataset.id, "datasets")
                     .upload()
                     .then( async (success) => {
                         if (success) {
@@ -97,7 +97,7 @@ async function callback(msg) {
                         } else {
                             console.log('Upload failed');
                             // Notifica di successo
-                            bot.sendMessage(chatId, username+" Al momento il servizio di Upload non è disponibile. ", {
+                            bot.sendMessage(chatId, username+" We apologize, but the upload service is currently unavailable. Please try again later. ", {
                                 message_thread_id: msg.message_thread_id
                             });
                         }
@@ -109,6 +109,8 @@ async function callback(msg) {
                     message_thread_id: msg.message_thread_id
                 });
             }
+            if( filePath )
+                fs.unlinkSync( filePath );
         } else {
             console.log("Sezione risposte senza photo");
             //            bot.sendMessage(chatId, "Per favore, carica un'immagine per la call for data.", msg.message_thread_id);
@@ -124,6 +126,7 @@ async function callback(msg) {
                 await bot.sendMessage(chatId, answer);
             }
         }
+
     } catch (error) {
         console.error(error.stack);
         //        bot.sendMessage(chatId, "Si è verificato un errore. Riprova più tardi."); // TODO: capire
