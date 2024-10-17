@@ -33,45 +33,19 @@ async function validateImage(filePath, description) {
         // Verifica che il file esista e leggi il file come buffer
         const absolutePath = path.resolve(filePath);
         const imageBuffer = await fs.readFile(absolutePath);
-
         // Simuliamo l'invio dell'immagine all'API (se OpenAI supportasse le immagini direttamente)
         // In questo caso fittizio, non inviamo direttamente il buffer ma proseguiamo con una simulazione del processo
         const response = await openai.createChatCompletion({
             model: "gpt-4o",
             messages: [
                 { role: "system", content: AGRIFOOD },
-                { role: "user", content: "Ecco l'immagine da valutare. Rispondimi sono SI, NO oppure FORSE" },
+                { role: "user", content: "Here is the image to evaluate. Reply with only YES, NO, or MAYBE." } 
                 // Potresti integrare una modalità per inviare effettivamente l'immagine tramite un'API separata o esterna
             ],
             files: [{ buffer: imageBuffer, filename: path.basename(filePath), filetype: 'image/png' }]
         });
-
         const validationResult = response.data.choices[0].message.content;
         return { valid: validationResult.includes('SI'), score: validationResult };
-
-    } catch (error) {
-        console.error("Errore con l'API di OpenAI:", error);
-        return { valid: false, score: null };
-    }
-}
-
-
-async function validateImageFromBuffer(imageBuffer, description) {
-    if (!openai) {
-        throw new Error('OpenAI non è configurato correttamente');
-    }
-
-    try {
-        const response = await openai.createChatCompletion({
-            model: "gpt-4",
-            messages: [
-                { role: "system", content: `Sei un esperto di analisi immagini per dataset. Valuta se l'immagine corrisponde alla descrizione: ${description}` },
-                { role: "user", content: "Ecco l'immagine da valutare." },
-            ],
-        });
-
-        const validationResult = response.data.choices[0].message.content;
-        return { valid: validationResult.includes('conforme'), score: validationResult };
     } catch (error) {
         console.error("Errore con l'API di OpenAI:", error);
         return { valid: false, score: null };
@@ -144,7 +118,7 @@ async function answerFromC4DTopicMessage( user, question, c4d, activity ) {
             model: "gpt-4",
             messages: [
                 { role: "system", content: contextTopic },
-                { role: "user", content: "Crea una risposta per l'utente " + user.username + " che mi ci chiede questo: " + question + ". Considera il suo ruolo di Producer di Immagini inerenti la Call for Data: ("+ contextTopic +") di DedoAI. L'attività che lui ha già fatto è rappresentata dal seguente JSON " + JSON.stringify(activity) + " Puoi usare questa informazione per dargli un resoconto" },
+                { role: "user", content: "Create a response for the user " + user.username + " who is asking me this: " + question + ". Consider their role as an Image Producer related to the Call for Data: (" + contextTopic + ") of DedoAI. The activity they have already done is represented by the following JSON " + JSON.stringify(activity) + ". You can use this information to provide them with a report." } 
             ],
         });
 
