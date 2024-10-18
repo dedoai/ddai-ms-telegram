@@ -12,7 +12,7 @@ var parsedSecrets;
     try {
 	  try {
 	    // Chiama `getSecret` in modo asincrono per ottenere il segreto
-	    const secrets = await getSecret('dev/telegram');
+	    const secrets = await getSecret(env+'/telegram');
 	    parsedSecrets = JSON.parse(secrets); // Assumi che il segreto sia in formato JSON
 	    console.log(parsedSecrets); // Stampa i segreti (Telegram e OpenAI)
 	    // Ora puoi usare i segreti per inizializzare il bot

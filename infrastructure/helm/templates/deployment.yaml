@@ -27,7 +27,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: ddai-ms-telegram
-                  key: ANTHROPIC_API_KEY              
+                  key: ANTHROPIC_API_KEY
             - name: SERVER_URL
               valueFrom:
                 configMapKeyRef:

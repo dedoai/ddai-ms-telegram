@@ -157,7 +157,8 @@ async function listen(TOKENAPI, WEBHOOK) {
     });
 
     // Imposta il Webhook su Telegram con l'URL pubblico del tuo API Gateway
-    bot.setWebHook(WEBHOOK);
+    await bot.setWebHook(WEBHOOK);
+    console.log("Webhook impostato");
 }
 
 

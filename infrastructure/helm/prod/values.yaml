@@ -1,4 +1,4 @@
 replicaCount: 3
 
 image:
-  tag: prod
+  tag: 0.1.16_20241017121431

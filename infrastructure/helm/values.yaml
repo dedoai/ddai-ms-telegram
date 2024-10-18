@@ -1,9 +1,9 @@
 replicaCount: 2
 
 image:
-  repository: {{ACCOUNTID}}.dkr.ecr.us-east-1.amazonaws.com/ddai-ms-telegram
+  repository: 381492109137.dkr.ecr.us-east-1.amazonaws.com/ddai-ms-telegram
   pullPolicy: IfNotPresent
-  tag: {{REL}}
+  tag: 0.1.16_20241017121431
 
 service:
   type: LoadBalancer
