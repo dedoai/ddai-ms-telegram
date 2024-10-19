@@ -62,7 +62,7 @@ async function countDatasetsInC4d(c4dId) {
 async function countFilesInDataset(datasetId) {
   const res = await pool.query(
     'SELECT COUNT(*) FROM files WHERE entity_name = $1 AND entity_id = $2',
-    ['dataset', datasetId]
+    ['datasets', datasetId]
   );
   return parseInt(res.rows[0].count, 10);  // Ritorna il conteggio dei file caricati
 }
@@ -84,7 +84,7 @@ async function manageDataset(telegramTopic, userId, c4d) {
     let dataset = await getDataset(userId, c4d.id);
 
     // 3. Se non esiste un dataset o è validato, creane uno nuovo
-    if (!dataset || dataset.is_validated) {
+    if (!dataset) {
       dataset = await createDataset(userId, c4d.id);
       return { message: 'New dataset created.', dataset };
     }
@@ -94,6 +94,8 @@ async function manageDataset(telegramTopic, userId, c4d) {
 
     // 5. Controlla se il dataset è completato rispetto al limite impostato
     if (fileCount >= c4d.dataset_limit) {
+      // 5.1 Se il dataset è completato, valida il dataset
+      await handleValidateDataset(dataset.id);
       // dataset = await createDataset(userId, c4d.id);
       // return { message: 'Dataset limit reached. New dataset created.', fileCount, dataset, c4d };
       return { message: 'Dataset limit reached. New dataset created.', fileCount, dataset, c4d, limitReached: true };
@@ -174,6 +176,15 @@ async function getUserActivityInC4D(userId, c4dId) {
     console.error('Error fetching user activity:', error);
     throw new Error('Could not fetch user activity.');
   }
+}
+
+async function handleValidateDataset(datasetId) {
+  const updateRes = await pool.query(
+    'UPDATE datasets SET is_validated = true WHERE id = $1',
+    [datasetId]
+  );
+
+  return updateRes.rows[0];
 }
 
 // Funzione per controllare se un dataset ha raggiunto il limite di file e validarlo
