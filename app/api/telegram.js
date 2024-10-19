@@ -90,7 +90,7 @@ async function callback(msg) {
       if (validation.status !== "ERROR") {
         //                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
         // await dedo.handleDatasetUpload(user.id, c4d , filePath)
-        new Uploader(filePath, user.id, c4d.data_type, { description: msg.text, score: validation.score }, dataset.dataset.id, "datasets")
+        new Uploader(filePath, user.id, c4d.data_type, { description: msg.text, score: validation.score }, dataset.dataset.id, "datasets", c4d.id)
           .upload()
           .then(async (success) => {
             if (success) {

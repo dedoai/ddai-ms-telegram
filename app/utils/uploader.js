@@ -12,13 +12,14 @@ class Uploader {
   bucketName = null;
   bucketUrl = null;
 
-  constructor(filePath, token, fileType, metadata, entityId, entityName) {
+  constructor(filePath, token, fileType, metadata, entityId, entityName, c4dId) {
     this.filePath = filePath;
     this.token = token;
     this.fileType = fileType;
     this.metadata = metadata;
     this.entityId = entityId;
     this.entityName = entityName;
+    this.c4dId = c4dId;
   }
 
   async upload() {
@@ -35,6 +36,7 @@ class Uploader {
           contentType: this.fileType,
           entityId: this.entityId,
           entityName: this.entityName,
+          c4dId: this.c4dId,
         },
         {
           headers: {
