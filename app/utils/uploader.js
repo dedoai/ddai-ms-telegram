@@ -29,14 +29,20 @@ class Uploader {
 
     try {
       console.log('Init upload...', `${SERVER_URL}/init-upload`);
-      const initResponse = await post(`${SERVER_URL}/init-upload`, {
-        contentType: this.fileType
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'principalid': this.token
+      const initResponse = await post(
+        `${SERVER_URL}/init-upload`,
+        {
+          contentType: this.fileType,
+          entityId: this.entityId,
+          entityName: this.entityName,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'principalid': this.token
+          }
         }
-      });
+      );
 
       const { uploadId, fileName, bucketName } = initResponse.data.data;
       this.currentUploadId = uploadId;
