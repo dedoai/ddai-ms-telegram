@@ -1,6 +1,6 @@
 // /src/api/telegram.js
 const TelegramBot = require('node-telegram-bot-api');
-const { getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, updateWalletAddressByTelegramId } = require('../db/postgres');
+const { getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, updateWalletAddressByTelegramId, countDatasetsInC4d } = require('../db/postgres');
 const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const secrets = require('../config/index');
@@ -38,6 +38,7 @@ async function callback(msg) {
   //    console.log( msg );
   const chatId = msg.chat.id;
   const telegramId = msg.from.id;
+  let username = msg.from.username ? `@${msg.from.username}` : msg.from.first_name;
 
   try {
     if (msg.chat && !msg.reply_to_message) {
@@ -50,10 +51,10 @@ async function callback(msg) {
         answer = await openai.answerFromGeneralMessage(msg.chat.from, "Grazie per aver condiviso il tuo indirizzo USDT TRC20. Il tuo indirizzo è stato registrato con successo.");
       } else answer = await openai.answerFromGeneralMessage(msg.chat.from, msg.text);
 
-      return await bot.sendMessage(chatId, answer);
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answer}`);
     }
+
     let topic = msg.reply_to_message.forum_topic_created.name;
-    let username = msg.from.username ? `@${msg.from.username}` : msg.from.first_name;
     console.log("Utente ", username, " scrive sotto il TOPIC ", topic)
     var c4d = await getC4DByTopic(msg.reply_to_message.forum_topic_created.name);
     console.log("C4D trovata ", c4d.id)
@@ -68,7 +69,7 @@ async function callback(msg) {
 
     if (dataset?.limitReached) {
       let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, dataset.message);
-      return await bot.sendMessage(chatId, answerLR);
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answerLR}`);
     }
 
     console.log("Dataset selection result " + dataset.message);
@@ -86,11 +87,9 @@ async function callback(msg) {
       //	        console.log("Validation dump ", validation );
       let validation = await validator.validate(filePath, msg.chat, c4d.description);
       console.log("Validation ", validation);
-      if (validation.status != "ERROR") {
+      if (validation.status !== "ERROR") {
         //                const s3Path = `cd4id-${topic}/dataset-${user.id}/shasum.ext`;
-        //                await dedo.handleDatasetUpload(user.id, c4d,filePath )
-        // TODO ADD DB:
-        // 
+        // await dedo.handleDatasetUpload(user.id, c4d , filePath)
         new Uploader(filePath, user.id, c4d.data_type, { description: msg.text, score: validation.score }, dataset.dataset.id, "datasets")
           .upload()
           .then(async (success) => {
@@ -100,9 +99,12 @@ async function callback(msg) {
               console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
               let text = "Congratulations! Your image has been accepted, and your DEDO Token credit has been updated. | Fai vedere le activity in modo testuale/eleco e non JSON"
               let answer = await openai.answerFromC4DTopicMessage(username, text, c4d, activity);
-              bot.sendMessage(chatId, answer, {
-                message_thread_id: msg.message_thread_id
-              });
+              bot.sendMessage(
+                chatId,
+                `Dear ${username}\n${answer}`,
+                {
+                  message_thread_id: msg.message_thread_id
+                });
               // Notifica di successo
             } else {
               console.log('Upload failed');
@@ -116,7 +118,9 @@ async function callback(msg) {
           });
 
       } else {
-        bot.sendMessage(chatId, username + " " + validation.description, {
+        bot.sendMessage(
+          chatId,
+          `Dear ${username}\n${validation.description}`, {
           message_thread_id: msg.message_thread_id
         });
         if (filePath)
@@ -130,11 +134,14 @@ async function callback(msg) {
       console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
       let answer = await openai.answerFromC4DTopicMessage(user, msg.text, c4d, activity);
       if (msg.message_thread_id) {
-        await bot.sendMessage(chatId, answer, {
-          message_thread_id: msg.message_thread_id
-        });
+        await bot.sendMessage(
+          chatId,
+          `Dear ${username}\n${answer}`,
+          {
+            message_thread_id: msg.message_thread_id
+          });
       } else {
-        await bot.sendMessage(chatId, answer);
+        await bot.sendMessage(chatId, `Dear ${username}\n${answer}`);
       }
     }
 

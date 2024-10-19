@@ -50,6 +50,15 @@ async function createDataset(userId, c4dId, name = 'New Dataset') {
   return res.rows[0];
 }
 
+async function countDatasetsInC4d(c4dId) {
+  const res = await pool.query(
+    'SELECT COUNT(*) FROM datasets WHERE c4d_id = $1 AND is_validated = true',
+    [c4dId]
+  );
+
+  return parseInt(res.rows[0].count, 10);
+}
+
 async function countFilesInDataset(datasetId) {
   const res = await pool.query(
     'SELECT COUNT(*) FROM files WHERE entity_name = $1 AND entity_id = $2',
@@ -60,11 +69,15 @@ async function countFilesInDataset(datasetId) {
 
 async function manageDataset(telegramTopic, userId, c4d) {
   try {
-    if (c4d)
-      // 1. Recupera il record C4D in base al telegram_topic
-      c4d = await getC4DByTopic(telegramTopic);
-    if (!c4d) {
-      throw new Error('C4D not found for the provided topic.');
+    // 1. Recupera il record C4D in base al telegram_topic
+    if (c4d) c4d = await getC4DByTopic(telegramTopic);
+    if (!c4d) throw new Error('C4D not found for the provided topic.');
+
+    // 1.5
+    const datasetsInC4d = await countDatasetsInC4d(c4d.id);
+
+    if (c4d.rewards <= (datasetsInC4d * c4d.dataset_price)) {
+      return { message: 'Dataset limit reached. New dataset created.', fileCount, dataset, c4d, limitReached: true };
     }
 
     // 2. Recupera l'ultimo dataset dell'utente per la C4D
@@ -233,13 +246,14 @@ async function updateWalletAddressByTelegramId(telegramId, newWalletAddress) {
 // Esportiamo la nuova funzione insieme alle altre esistenti
 
 module.exports = {
-  getAllTopicsAndDescriptions,
-  getUser,
+  countDatasetsInC4d,
   createUser,
-  manageDataset,
+  getAllTopicsAndDescriptions,
   getC4DByTopic,
+  getUser,
   getUserActivityInC4D,
+  manageDataset,
+  updateWalletAddressByTelegramId,
   validateDatasetIfComplete,
-  updateWalletAddressByTelegramId
 };
 
