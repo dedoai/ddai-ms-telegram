@@ -51,7 +51,9 @@ async function callback(msg) {
         answer = await openai.answerFromGeneralMessage(msg.chat.from, "Grazie per aver condiviso il tuo indirizzo USDT TRC20. Il tuo indirizzo è stato registrato con successo.");
       } else answer = await openai.answerFromGeneralMessage(msg.chat.from, msg.text);
 
-      return await bot.sendMessage(chatId, `Dear ${username}\n${answer}`);
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answer}`,{
+        message_thread_id: msg.message_thread_id
+      });
     }
 
     let topic = msg.reply_to_message.forum_topic_created.name;
@@ -69,7 +71,9 @@ async function callback(msg) {
 
     if (dataset?.limitReached) {
       let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, dataset.message);
-      return await bot.sendMessage(chatId, `Dear ${username}\n${answerLR}`);
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answerLR}`,{
+        message_thread_id: msg.message_thread_id
+      });
     }
 
     console.log("Dataset selection result " + dataset.message);
