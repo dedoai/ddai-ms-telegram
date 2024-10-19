@@ -19,7 +19,7 @@ TelegramBot.Promise = Promise;
 var bot;
 var TOKEN;
 
-function extractTRC20Address(message) {
+function extractTRC20Address(message = '') {
   // Regular expression per trovare l'indirizzo TRC20
   const trc20Regex = /T[1-9A-HJ-NP-Za-km-z]{33}/gm;
   // Cerca l'indirizzo TRC20 nella stringa
@@ -51,7 +51,7 @@ async function callback(msg) {
         answer = await openai.answerFromGeneralMessage(msg.chat.from, "Grazie per aver condiviso il tuo indirizzo USDT TRC20. Il tuo indirizzo è stato registrato con successo.");
       } else answer = await openai.answerFromGeneralMessage(msg.chat.from, msg.text);
 
-      return await bot.sendMessage(chatId, `Dear ${username}\n${answer}`,{
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answer}`, {
         message_thread_id: msg.message_thread_id
       });
     }
@@ -71,7 +71,7 @@ async function callback(msg) {
 
     if (dataset?.limitReached) {
       let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, dataset.message);
-      return await bot.sendMessage(chatId, `Dear ${username}\n${answerLR}`,{
+      return await bot.sendMessage(chatId, `Dear ${username}\n${answerLR}`, {
         message_thread_id: msg.message_thread_id
       });
     }
