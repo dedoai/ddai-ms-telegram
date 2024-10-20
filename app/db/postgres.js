@@ -206,7 +206,7 @@ async function insertRecord(pool, record) {
 async function checkFilePathExists( checksum ) {
   const res = await pool.query('SELECT id FROM files WHERE e_tag LIKE $1', [checksum]);
   console.log("checkFilePathExists", res)
-  return Boolean(res.rows[0]);
+  return res.rows[0]?.length > 0;
 }
 
 

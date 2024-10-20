@@ -50,7 +50,7 @@ function extractTRC20Address(message = '') {
 }
 
 function getChatGPTMsg( username, msg ){
-  return "Formulate a response for " + username + ". Regarding the message: " + msg + " | at the end sign the message as dedoAI ChatBot";
+  return "Formulate a response for " + username + ". Regarding the message: " + msg + " | at the end sign the message as dedoAI Team";
 }
 
 async function callback(msg) {
@@ -143,7 +143,7 @@ async function callback(msg) {
             } else {
               console.log('Upload failed');
               // Notifica di successo
-              let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, " We apologize, but the upload service is currently unavailable. Please try again later. ") );
+              let answerLR = await openai.answerFromGeneralMessage(username, getChatGPTMsg( username, " We apologize, but the upload service is currently unavailable. Please try again later. ") );
               bot.sendMessage(chatId, answerLR, {
                 message_thread_id: msg.message_thread_id
               });
@@ -153,7 +153,7 @@ async function callback(msg) {
           });
 
       } else {
-        let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, validation.description) );
+        let answerLR = await openai.answerFromGeneralMessage(username, getChatGPTMsg( username, validation.description) );
         bot.sendMessage(
           chatId,
           answerLR, {

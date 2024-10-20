@@ -72,9 +72,9 @@ async function answerFromGeneralMessage(user, question) {
     console.log("answerFromGeneralMessage", question);
     let content;
     if (question) {
-      content = "Anwer the Producer " + user + " that wrote us: " + question;
+      content = question;
     } else {
-      content = "Say hello and welcome the new customer"
+      content = "Say hello and welcome the new customer " + user
     }
     const response = await openai.createChatCompletion({
       model: "gpt-4",
