@@ -3,6 +3,8 @@ const { Pool } = require('pg');
 
 const { getSecret } = require('../config/index');
 
+var CACHE = {};
+
 var pool;
 
 async function connect() {
@@ -33,7 +35,9 @@ async function getAllTopicsAndDescriptions() {
 }
 
 async function getC4DByTopic(telegramTopic) {
+  if( CACHE[telegramTopic] !== undefined ) return CACHE[telegramTopic];
   const res = await pool.query('SELECT * FROM c4d WHERE telegram_topic = $1', [telegramTopic]);
+  CACHE[telegramTopic] = res.rows[0];
   return res.rows[0];
 }
 
@@ -153,7 +157,7 @@ async function getUserActivityInC4D(userId, c4dId) {
              WHERE user_id = $1 AND c4d_id = $2 AND is_validated = true`,
       [userId, c4dId]
     );
-    const validatedDatasetCount = parseInt(validatedDatasetRes.rows[0].validated_count, 10);
+    const completedDatasetCount = parseInt(validatedDatasetRes.rows[0].validated_count, 10);
 
     // 3. Recupera il valore di dataset_price dalla C4D
     const c4dRes = await pool.query(
@@ -163,13 +167,13 @@ async function getUserActivityInC4D(userId, c4dId) {
     const datasetPrice = parseFloat(c4dRes.rows[0].dataset_price);
 
     // 4. Calcola i DEDO Token guadagnati
-    const dedoEarned = validatedDatasetCount * datasetPrice;
+    const usdtEarned = completedDatasetCount * datasetPrice;
 
     // 5. Restituisci le informazioni
     return {
       fileCount,
-      validatedDatasetCount,
-      dedoEarned
+      completedDatasetCount,
+      usdtEarned
     };
 
   } catch (error) {
@@ -177,6 +181,34 @@ async function getUserActivityInC4D(userId, c4dId) {
     throw new Error('Could not fetch user activity.');
   }
 }
+// Funzione per inserire un record nel database
+async function insertRecord(pool, record) {
+  const query = `
+      INSERT INTO your_table (id, file_path, created_at) 
+      VALUES ($1, $2, $3) 
+      RETURNING *;
+  `;
+  const values = [record.id, record.file_path, record.created_at];
+
+  try {
+      const client = await pool.connect();
+      const res = await client.query(query, values);
+      client.release();
+      return res.rows[0]; // Ritorna il record appena inserito
+  } catch (err) {
+      console.error('Errore durante l\'inserimento del record:', err);
+      throw err;
+  }
+}
+
+// TODO :: CHE
+// Funzione per controllare l'esistenza del file_path
+async function checkFilePathExists( checksum ) {
+  const res = await pool.query('SELECT id FROM files WHERE e_tag LIKE $1', [checksum]);
+  return Boolean(res.rows[0]);
+}
+
+
 
 async function handleValidateDataset(datasetId) {
   const updateRes = await pool.query(
@@ -229,7 +261,7 @@ async function showUserActivity(userId, c4dId) {
   try {
     const activity = await getUserActivityInC4D(userId, c4dId);
     console.log(`User has uploaded ${activity.fileCount} files.`);
-    console.log(`User has validated ${activity.validatedDatasetCount} datasets.`);
+    console.log(`User has Completed ${activity.validatedDatasetCount} datasets.`);
     console.log(`User has earned ${activity.dedoEarned} DEDO Tokens.`);
   } catch (error) {
     console.error('Error showing user activity:', error);
@@ -266,5 +298,6 @@ module.exports = {
   manageDataset,
   updateWalletAddressByTelegramId,
   validateDatasetIfComplete,
+  checkFilePathExists,
 };
 
