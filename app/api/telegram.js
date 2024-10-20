@@ -67,10 +67,10 @@ async function callback(msg) {
 
       if (!!containsTRC20Address) {
         await updateWalletAddressByTelegramId(telegramId, containsTRC20Address);
-        answer = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( usermame, "Thank you for sharing your USDT TRC20 address. Your address has been successfully registered."));
-      } else answer = await openai.answerFromGeneralMessage(msg.chat.from, msg.text);
+        answer = await openai.answerFromGeneralMessage(username, getChatGPTMsg( username, "Thank you for sharing your USDT TRC20 address. Your address has been successfully registered."));
+      } else answer = await openai.answerFromGeneralMessage(username, msg.text);
 
-      return await bot.sendMessage(chatId, `${username}\n${answer}`, {
+      return await bot.sendMessage(chatId, answer, {
         message_thread_id: msg.message_thread_id
       });
     }
