@@ -141,7 +141,7 @@ async function callback(msg) {
             } else {
               console.log('Upload failed');
               // Notifica di successo
-              let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, " We apologize, but the upload service is currently unavailable. Please try again later. " );
+              let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, " We apologize, but the upload service is currently unavailable. Please try again later. ") );
               bot.sendMessage(chatId, answerLR, {
                 message_thread_id: msg.message_thread_id
               });
