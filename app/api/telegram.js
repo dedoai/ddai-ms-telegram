@@ -49,7 +49,7 @@ function extractTRC20Address(message = '') {
 }
 
 function getChatGPTMsg( username, msg ){
-  return "Formulate a response for " + username + ". Regarding the message: " + msg;
+  return "Formulate a response for " + username + ". Regarding the message: " + msg + " | at the end sign the message as dedoAI ChatBot";
 }
 
 async function callback(msg) {
