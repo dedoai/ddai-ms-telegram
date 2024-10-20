@@ -105,14 +105,14 @@ async function callback(msg) {
 
       // Esempio di utilizzo
       let checksum = await calculateFileSha1Async(filePath);
-
-      let isDuplicated = checkFilePathExists(checksum);
+      let isDuplicated = await checkFilePathExists(checksum);
       if( isDuplicated ){
-        let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, "The uploaded photo is a duplicate within our collection, please provide another image.") );
+        let answerLR = await openai.answerFromGeneralMessage(username, getChatGPTMsg( username, "The uploaded photo is a duplicate within our collection, please provide another image.") );
         return await bot.sendMessage(chatId, answerLR, {
                   message_thread_id: msg.message_thread_id
                });
       }
+
       // Process and validate image with OpenAI/ChatGPT
       //            const processedImage = await processImage(filePath);
       //            const validation = await openai.validateImage( processedImage, topic );
