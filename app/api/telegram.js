@@ -134,7 +134,7 @@ async function callback(msg) {
               console.log('Upload completed successfully');
               let activity = await getUserActivityInC4D(user.id, c4d.id);
               console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
-              let text = "Congratulations! Your image has been accepted, and your DEDO Token credit has been updated. | Fai vedere le activity in modo testuale/eleco e non JSON"
+              let text = "Congratulations! Your image has been accepted, and your USDT TRC20 credit has been updated. Please provide a wallet | Fai vedere le activity in modo testuale/eleco e non JSON"
               let answer = await openai.answerFromC4DTopicMessage(username, text, c4d, activity);
               bot.sendMessage(
                 chatId,
@@ -172,11 +172,11 @@ async function callback(msg) {
       // Verifica se esiste il message_thread_id per i forum
       let activity = await getUserActivityInC4D(user.id, c4d.id);
       console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
-      let answer = await openai.answerFromC4DTopicMessage(user, msg.text, c4d, activity);
+      let answer = await openai.answerFromC4DTopicMessage(username, msg.text, c4d, activity);
       if (msg.message_thread_id) {
         await bot.sendMessage(
           chatId,
-          `${username}\n${answer}`,
+          answer,
           {
             message_thread_id: msg.message_thread_id
           });
