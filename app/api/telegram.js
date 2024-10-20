@@ -19,6 +19,7 @@ async function calculateFileSha1Async(filePath) {
   try {
       const fileBuffer = await fs.readFile(filePath); // Legge il file in buffer
       const hash = crypto.createHash('md5').update(fileBuffer).digest('hex'); // Calcola l'hash
+      console.log("calculateFileSha1Async", hash);
       return hash;
   } catch (err) {
       console.error('Errore durante il calcolo dell\'hash SHA1:', err);
@@ -89,8 +90,8 @@ async function callback(msg) {
     let dataset = await manageDataset(topic, user.id, c4d);
 
     if (dataset?.limitReached) {
-      let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, dataset.message);
-      return await bot.sendMessage(chatId, `${username}\n${answerLR}`, {
+      let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, dataset.message) );
+      return await bot.sendMessage(chatId, answerLR, {
         message_thread_id: msg.message_thread_id
       });
     }
@@ -104,10 +105,11 @@ async function callback(msg) {
 
       // Esempio di utilizzo
       let checksum = await calculateFileSha1Async(filePath);
+
       let isDuplicated = checkFilePathExists(checksum);
       if( isDuplicated ){
         let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, "The uploaded photo is a duplicate within our collection, please provide another image.") );
-        return await bot.sendMessage(chatId, `${username}\n${answerLR}`, {
+        return await bot.sendMessage(chatId, answerLR, {
                   message_thread_id: msg.message_thread_id
                });
       }
