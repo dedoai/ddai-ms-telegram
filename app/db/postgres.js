@@ -35,7 +35,7 @@ async function getAllTopicsAndDescriptions() {
 }
 
 async function getC4DByTopic(telegramTopic) {
-  if( CACHE[telegramTopic] !== undefined ) return CACHE[telegramTopic];
+  if (CACHE[telegramTopic] !== undefined) return CACHE[telegramTopic];
   const res = await pool.query('SELECT * FROM c4d WHERE telegram_topic = $1', [telegramTopic]);
   CACHE[telegramTopic] = res.rows[0];
   return res.rows[0];
@@ -191,19 +191,19 @@ async function insertRecord(pool, record) {
   const values = [record.id, record.file_path, record.created_at];
 
   try {
-      const client = await pool.connect();
-      const res = await client.query(query, values);
-      client.release();
-      return res.rows[0]; // Ritorna il record appena inserito
+    const client = await pool.connect();
+    const res = await client.query(query, values);
+    client.release();
+    return res.rows[0]; // Ritorna il record appena inserito
   } catch (err) {
-      console.error('Errore durante l\'inserimento del record:', err);
-      throw err;
+    console.error('Errore durante l\'inserimento del record:', err);
+    throw err;
   }
 }
 
 // TODO :: CHE
 // Funzione per controllare l'esistenza del file_path
-async function checkFilePathExists( checksum ) {
+async function checkFilePathExists(checksum) {
   const res = await pool.query('SELECT id FROM files WHERE e_tag LIKE $1', [checksum]);
   console.log("checkFilePathExists", res.rows?.length > 0)
   return res.rows?.length > 0;
