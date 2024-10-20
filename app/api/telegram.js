@@ -103,7 +103,7 @@ async function callback(msg) {
       const filePath = await bot.downloadFile(fileId, './temp');
 
       // Esempio di utilizzo
-      let checksum = await calculateFileSha1Async(Sha1filePath);
+      let checksum = await calculateFileSha1Async(filePath);
       let isDuplicated = checkFilePathExists(checksum);
       if( isDuplicated ){
         let answerLR = await openai.answerFromGeneralMessage(msg.chat.from, getChatGPTMsg( username, "The uploaded photo is a duplicate within our collection, please provide another image.") );
@@ -133,7 +133,7 @@ async function callback(msg) {
               let answer = await openai.answerFromC4DTopicMessage(username, text, c4d, activity);
               bot.sendMessage(
                 chatId,
-                `${username}\n${answer}`,
+                answer,
                 {
                   message_thread_id: msg.message_thread_id
                 });

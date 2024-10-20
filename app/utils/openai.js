@@ -108,7 +108,7 @@ async function answerFromC4DTopicMessage(user, question, c4d, activity) {
       model: "gpt-4",
       messages: [
         { role: "system", content: contextTopic },
-        { role: "user", content: "Create a response for the user " + user.username + " who is asking me this: " + question + ". Consider their role as an Image Producer related to the Call for Data: (" + contextTopic + ") of DedoAI. The activity they have already done is represented by the following JSON " + JSON.stringify(activity) + ". You can use this information to provide them with a report." }
+        { role: "user", content: "Create a response for the user " + user + " who is asking me this: " + question + ". Consider their role as an Image Producer related to the Call for Data: (" + contextTopic + ") of DedoAI. The activity they have already done is represented by the following JSON " + JSON.stringify(activity) + ". You can use this information to provide them with a report." }
       ],
     });
 
