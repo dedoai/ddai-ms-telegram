@@ -172,7 +172,7 @@ async function getUserActivityInC4D(userId, c4dId) {
     // 5. Restituisci le informazioni
     return {
       fileCount,
-      completedDatasetCount,
+//      completedDatasetCount,
       usdtEarned
     };
 
@@ -182,29 +182,20 @@ async function getUserActivityInC4D(userId, c4dId) {
   }
 }
 // Funzione per inserire un record nel database
-async function insertRecord(pool, record) {
-  const query = `
-      INSERT INTO your_table (id, file_path, created_at) 
-      VALUES ($1, $2, $3) 
+async function insertDatasetFile(datasetId, fileName, checksum) {
+  const res = await pool.query(`
+      INSERT INTO dataset_files (dataset_id, file_path, checksum, created_at) 
+      VALUES ($1, $2, $3, $4) 
       RETURNING *;
-  `;
-  const values = [record.id, record.file_path, record.created_at];
-
-  try {
-    const client = await pool.connect();
-    const res = await client.query(query, values);
-    client.release();
-    return res.rows[0]; // Ritorna il record appena inserito
-  } catch (err) {
-    console.error('Errore durante l\'inserimento del record:', err);
-    throw err;
-  }
+  `, [datasetId, fileName, checksum, new Date()]); ;
+  console.log("insertDatasetFile", res)
+    return res;
 }
 
 // TODO :: CHE
 // Funzione per controllare l'esistenza del file_path
 async function checkFilePathExists(checksum) {
-  const res = await pool.query('SELECT id FROM files WHERE e_tag LIKE $1', [checksum]);
+  const res = await pool.query('SELECT id FROM dataset_files WHERE chesum = $1', [checksum]);
   console.log("checkFilePathExists", res.rows?.length > 0)
   return res.rows?.length > 0;
 }
@@ -300,5 +291,6 @@ module.exports = {
   updateWalletAddressByTelegramId,
   validateDatasetIfComplete,
   checkFilePathExists,
+  insertDatasetFile,
 };
 

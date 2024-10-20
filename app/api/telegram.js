@@ -1,6 +1,6 @@
 // /src/api/telegram.js
 const TelegramBot = require('node-telegram-bot-api');
-const { getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, updateWalletAddressByTelegramId, countDatasetsInC4d, checkFilePathExists } = require('../db/postgres');
+const { getUser, createUser, manageDataset, getC4DByTopic, getUserActivityInC4D, updateWalletAddressByTelegramId, countDatasetsInC4d, checkFilePathExists, insertDatasetFile } = require('../db/postgres');
 const { processImage } = require('../utils/imageProcessing');
 const { uploadToS3 } = require('../utils/aws');
 const secrets = require('../config/index');
@@ -18,7 +18,7 @@ const fs = require('fs').promises;
 async function calculateFileSha1Async(filePath) {
   try {
       const fileBuffer = await fs.readFile(filePath); // Legge il file in buffer
-      const hash = crypto.createHash('md5').update(fileBuffer).digest('hex'); // Calcola l'hash
+      const hash = crypto.createHash('sha1').update(fileBuffer).digest('hex'); // Calcola l'hash
       console.log("calculateFileSha1Async", hash);
       return hash;
   } catch (err) {
@@ -128,6 +128,9 @@ async function callback(msg) {
           .upload()
           .then(async (success) => {
             if (success) {
+
+              insertDatasetFile(dataset.dataset.id, filePath, checksum )
+
               console.log('Upload completed successfully');
               let activity = await getUserActivityInC4D(user.id, c4d.id);
               console.log("getUserActivityInC4D ", activity, user.id, c4d.id);
