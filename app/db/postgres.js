@@ -195,7 +195,7 @@ async function insertDatasetFile(datasetId, fileName, checksum) {
 // TODO :: CHE
 // Funzione per controllare l'esistenza del file_path
 async function checkFilePathExists(checksum) {
-  const res = await pool.query('SELECT id FROM dataset_files WHERE chesum = $1', [checksum]);
+  const res = await pool.query('SELECT id FROM dataset_files WHERE checksum = $1', [checksum]);
   console.log("checkFilePathExists", res.rows?.length > 0)
   return res.rows?.length > 0;
 }
@@ -253,7 +253,7 @@ async function showUserActivity(userId, c4dId) {
   try {
     const activity = await getUserActivityInC4D(userId, c4dId);
     console.log(`User has uploaded ${activity.fileCount} files.`);
-    console.log(`User has Completed ${activity.validatedDatasetCount} datasets.`);
+//    console.log(`User has Completed ${activity.validatedDatasetCount} datasets.`);
     console.log(`User has earned ${activity.dedoEarned} DEDO Tokens.`);
   } catch (error) {
     console.error('Error showing user activity:', error);
